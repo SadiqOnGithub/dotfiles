@@ -1,0 +1,41 @@
+[user]
+	name = sadiq_from_latitude
+	email = sadiqonemail@gmail.com
+[alias]
+    # show alias
+	ali = config --get-regexp alias
+	g = log --oneline --graph
+	ga = log --oneline --graph --all
+	a = add
+	# add all
+	aa = add .
+	# add & commit
+	ac = commit -am
+	c = commit -m
+	# commit again
+	cag = commit --amend
+	# commit again no-edit
+	cagn = commit --amend --no-edit
+	s = status
+	sv = status -v
+	svv = status -v -v
+	# stats
+	st = show --stat
+	# stat current
+	stc = show --stat HEAD
+	ch = checkout
+	b = branch
+	ba = branch -a
+	p = push
+	pl = pull
+	f = fetch
+	r = remote
+	rv = remote -v
+	# unstage
+	us = restore --staged
+	# unstage all
+	usa = restore --staged .
+	rebase-root = rebase -i --root
+	delete-alias = config --global --unset alias.ALI_NAME
+[safe]
+	directory = /etc/nginx/sites-available
