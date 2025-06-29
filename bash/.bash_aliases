@@ -1,4 +1,6 @@
 # tools bindings
+alias clr='clear'
+alias cl='clear'
 alias c='code'
 # function zc() { zed "$1" && exit; }
 alias zc='zed . && exit'
@@ -22,6 +24,7 @@ alias cn='cargo new'
 alias cr='cargo run'
 alias cb='cargo build'
 alias ch='cargo check'
+alias ct='cargo test'
 alias rust='evcxr'
 
 # npm bindings
@@ -40,10 +43,12 @@ alias sh='cd /home/sadiq/.ssh/'
 alias docu='cd /home/sadiq/Documents'
 alias down='cd /home/sadiq/Downloads'
 alias web='cd /home/sadiq/Documents/websites'
+alias oss='cd /home/sadiq/Documents/websites/oss'
 alias prac='cd /home/sadiq/Documents/websites/prac'
 alias rus='cd /home/sadiq/Documents/websites/prac/rust'
 alias 100x='cd /home/sadiq/Documents/websites/100x'
 alias doc='cd /home/sadiq/Documents/websites/docker'
+alias irs='cd /home/sadiq/Documents/websites/iris/iris_cua'
 alias bali='zed /home/sadiq/.bash_aliases'
 
 # bt folder bindings
