@@ -72,7 +72,37 @@ dotfiles/
 └── bin/
     └── bin/
         └── generate_commit_history.sh
+        └── tmpenv
 ```
+
+### `tmpenv` – Temporary Development Environment
+
+A utility to quickly create isolated development environments using Docker.
+
+**Usage:**
+
+```bash
+tmpenv <environment-name>
+```
+
+This will:
+- Create a new Docker container with a specified name.
+- Expose a unique SSH port for the environment.
+- Install basic development tools (Git, curl, vim, etc.).
+- Set a default password (`dev`) for the `root` user.
+
+**Example:**
+
+```bash
+tmpenv my-project
+```
+
+**Managing Environments:**
+
+- **SSH Access:** `ssh -p <PORT> root@localhost`
+- **Stop:** `docker stop <environment-name>`
+- **Start:** `docker start <environment-name>`
+- **Clean Up:** `docker rm -f <environment-name> && docker volume rm <environment-name>-data`
 
 ### Adding New Dotfiles
 
