@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Simple Development Environment Creator
+# Usage: mkenv <environment-name>
+
+if [ $# -eq 0 ]; then
+    echo "Usage: mkenv <environment-name>"
+    echo "Example: mkenv myproject"
+    exit 1
+fi
+
+ENV_NAME=$1
+PORT=$((2222 + $(echo $ENV_NAME | cksum | cut -d' ' -f1) % 1000))
+
+echo "Creating environment: $ENV_NAME"
+echo "SSH Port: $PORT"
+
+# Create and start container
+docker run -d \
+  --name "$ENV_NAME" \
+  -p "$PORT:22" \
+  -v "${ENV_NAME}-data:/root" \
+  ubuntu:22.04 \
+  bash -c "
+    apt update && apt install -y openssh-server git curl wget vim sudo
+    mkdir /var/run/sshd
+    echo 'root:dev' | chpasswd
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+    /usr/sbin/sshd -D
+  "
+
+# Wait for container to be ready
+sleep 3
+
+echo ""
+echo "Environment '$ENV_NAME' is ready!"
+echo "SSH: ssh -p $PORT root@localhost"
+echo "Password: dev"
+echo ""
+echo "Commands:"
+echo "  Stop:  docker stop $ENV_NAME"
+echo "  Start: docker start $ENV_NAME" 
+echo "  Clean: docker rm -f $ENV_NAME && docker volume rm ${ENV_NAME}-data"
