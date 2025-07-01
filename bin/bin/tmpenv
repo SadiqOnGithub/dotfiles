@@ -12,6 +12,28 @@ fi
 ENV_NAME=$1
 PORT=$((2222 + $(echo $ENV_NAME | cksum | cut -d' ' -f1) % 1000))
 
+# Ask about SSH key and dotfiles
+read -p "Do you want to add your public SSH key for passwordless login? (y/n) " add_key
+read -p "Do you want to mount your ~/dotfiles dir? (y/n) " add_dotfiles
+
+KEY_COMMAND=""
+if [[ "$add_key" == "y" || "$add_key" == "Y" ]]; then
+    if [ -f ~/.ssh/id_rsa.pub ]; then
+        PUB_KEY=$(cat ~/.ssh/id_rsa.pub)
+        # This command will be executed inside the container
+        KEY_COMMAND="mkdir -p /root/.ssh; echo '$PUB_KEY' > /root/.ssh/authorized_keys; chmod 600 /root/.ssh/authorized_keys; chmod 700 /root/.ssh;"
+    else
+        echo "Warning: Public key not found at ~/.ssh/id_rsa.pub. Proceeding without passwordless login."
+    fi
+fi
+
+DOTFILES_MOUNT=""
+if [[ "$add_dotfiles" == "y" || "$add_dotfiles" == "Y" ]]; then
+    # DOTFILES_MOUNT="-v $(pwd):/root/dotfiles"
+    # DOTFILES_MOUNT="-v ~/dotfiles:/root/dotfiles"
+    DOTFILES_MOUNT="-v $(eval echo ~/dotfiles):/root/dotfiles"
+fi
+
 echo "Creating environment: $ENV_NAME"
 echo "SSH Port: $PORT"
 
@@ -20,12 +42,14 @@ docker run -d \
   --name "$ENV_NAME" \
   -p "$PORT:22" \
   -v "${ENV_NAME}-data:/root" \
+  $DOTFILES_MOUNT \
   ubuntu:22.04 \
   bash -c "
-    apt update && apt install -y openssh-server git curl wget vim sudo
-    mkdir /var/run/sshd
-    echo 'root:dev' | chpasswd
-    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+    apt update && apt install -y openssh-server git curl wget vim sudo stow;
+    mkdir /var/run/sshd;
+    echo 'root:dev' | chpasswd;
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config;
+    $KEY_COMMAND
     /usr/sbin/sshd -D
   "
 
@@ -34,10 +58,19 @@ sleep 3
 
 echo ""
 echo "Environment '$ENV_NAME' is ready!"
-echo "SSH: ssh -p $PORT root@localhost"
-echo "Password: dev"
+if [[ "$add_key" == "y" || "$add_key" == "Y" ]] && [ -f ~/.ssh/id_rsa.pub ]; then
+    echo "SSH: ssh -p $PORT root@localhost"
+else
+    echo "SSH: ssh -p $PORT root@localhost"
+    echo "Password: dev"
+fi
+
+if [[ "$add_dotfiles" == "y" || "$add_dotfiles" == "Y" ]]; then
+    echo "Your dotfiles are mounted at /root/dotfiles"
+fi
+
 echo ""
 echo "Commands:"
 echo "  Stop:  docker stop $ENV_NAME"
-echo "  Start: docker start $ENV_NAME" 
+echo "  Start: docker start $ENV_NAME"
 echo "  Clean: docker rm -f $ENV_NAME && docker volume rm ${ENV_NAME}-data"
