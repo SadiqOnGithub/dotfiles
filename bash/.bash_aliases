@@ -40,15 +40,17 @@ alias nrw='npm run web'
 
 # folder bindings
 alias sh='cd /home/sadiq/.ssh/'
-alias docu='cd /home/sadiq/Documents'
+alias dotfiles='cd /home/sadiq/dotfiles'
 alias down='cd /home/sadiq/Downloads'
+alias docu='cd /home/sadiq/Documents'
+alias gls='cd /home/sadiq/Documents/goals'
 alias web='cd /home/sadiq/Documents/websites'
 alias oss='cd /home/sadiq/Documents/websites/oss'
 alias prac='cd /home/sadiq/Documents/websites/prac'
 alias rus='cd /home/sadiq/Documents/websites/prac/rust'
 alias 100x='cd /home/sadiq/Documents/websites/100x'
 alias doc='cd /home/sadiq/Documents/websites/docker'
-alias irs='cd /home/sadiq/Documents/websites/iris/iris_cua'
+alias irs='cd /home/sadiq/Documents/websites/iris'
 alias bali='zed /home/sadiq/.bash_aliases'
 
 # bt folder bindings
@@ -130,3 +132,6 @@ function stop_pf() {
 
 # Yellow user@host, Cyan folder
 PS1='\[\e[1;33m\]\u@\h \[\e[1;36m\]\W\[\e[0m\] \$ '
+
+
+export PATH="$PATH:$HOME/go/bin"
