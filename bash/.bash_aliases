@@ -40,7 +40,7 @@ alias nrw='npm run web'
 
 # folder bindings
 alias sh='cd /home/sadiq/.ssh/'
-alias dotfiles='cd /home/sadiq/dotfiles'
+alias dotfls='cd /home/sadiq/dotfiles'
 alias down='cd /home/sadiq/Downloads'
 alias docu='cd /home/sadiq/Documents'
 alias gls='cd /home/sadiq/Documents/goals'
@@ -132,6 +132,3 @@ function stop_pf() {
 
 # Yellow user@host, Cyan folder
 PS1='\[\e[1;33m\]\u@\h \[\e[1;36m\]\W\[\e[0m\] \$ '
-
-
-export PATH="$PATH:$HOME/go/bin"
