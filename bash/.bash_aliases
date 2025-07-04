@@ -6,6 +6,11 @@ alias c='code'
 alias zc='zed . && exit'
 alias z='zed'
 alias g='git'
+# auto completion for g alias
+# complete -o default -F __git_main g
+alias k=kubectl
+# auto completion for kubectl alias
+complete -o default -F __start_kubectl k
 alias cc='xclip -selection clipboard'
 alias gcn='git log --reverse --format="%H" HEAD..master | head -1 | xargs git checkout'
 alias gcp='git checkout HEAD~1'
