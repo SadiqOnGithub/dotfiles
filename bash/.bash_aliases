@@ -6,6 +6,7 @@ alias c='code'
 alias zc='zed . && exit'
 alias z='zed'
 alias g='git'
+alias gtr='gnome-terminal'
 # auto completion for g alias
 # complete -o default -F __git_main g
 alias k=kubectl
@@ -55,6 +56,7 @@ alias prac='cd /home/sadiq/Documents/websites/prac'
 alias rus='cd /home/sadiq/Documents/websites/prac/rust'
 alias 100x='cd /home/sadiq/Documents/websites/100x'
 alias doc='cd /home/sadiq/Documents/websites/docker'
+alias k8='cd /home/sadiq/Documents/websites/k8'
 alias irs='cd /home/sadiq/Documents/websites/iris'
 alias bali='zed /home/sadiq/.bash_aliases'
 
