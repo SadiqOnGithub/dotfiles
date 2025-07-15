@@ -1,0 +1,4 @@
+#!/bin/bash
+source ~/speech-env/bin/activate
+/home/sadiq/.config/nerd-dictation/nerd-dictation begin --vosk-model-dir=/home/sadiq/.config/nerd-dictation/model
+
