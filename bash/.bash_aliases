@@ -31,6 +31,8 @@ alias cr='cargo run'
 alias cb='cargo build'
 alias ch='cargo check'
 alias ct='cargo test'
+# it tells you non-idiomatic code!
+alias cclp='cargo clippy'
 alias rust='evcxr'
 
 # npm bindings
@@ -47,6 +49,7 @@ alias nrw='npm run web'
 # folder bindings
 alias sh='cd /home/sadiq/.ssh/'
 alias dotfls='cd /home/sadiq/dotfiles'
+alias des='cd /home/sadiq/Desktop'
 alias down='cd /home/sadiq/Downloads'
 alias docu='cd /home/sadiq/Documents'
 alias gls='cd /home/sadiq/Documents/goals'
