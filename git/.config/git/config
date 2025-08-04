@@ -23,6 +23,8 @@
 	st = show --stat
 	# stat current
 	stc = show --stat HEAD
+	# clone
+	cl = clone
 	ch = checkout
 	b = branch
 	ba = branch -a
