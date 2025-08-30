@@ -20,6 +20,12 @@ alias v='NVIM_APPNAME="nvim" nvim'
 # alias vn='NVIM_APPNAME="nvim-nornal" nvim'
 # alias vl='NVIM_APPNAME="nvim-lazy" nvim'
 
+# system
+alias asr='apt search'
+alias ain='sudo apt install'
+alias pag='ps aux | grep'
+
+
 # ssh bindings
 alias s='ssh'
 alias srv='ssh srv'
