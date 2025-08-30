@@ -1,0 +1,1 @@
+gcc -o netmon netmon.c -lpthread
