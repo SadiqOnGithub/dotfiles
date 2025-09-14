@@ -44,6 +44,7 @@
 	rebase-root = rebase -i --root
 	delete-alias = config --global --unset alias.ALI_NAME
 	ce = config --global -e
+	dlb = !git checkout main && git pull --prune && git branch --merged | grep -v \"\\*\" | xargs -n 1 git branch -d
 [safe]
 	directory = /etc/nginx/sites-available
 [core]
