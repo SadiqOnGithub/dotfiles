@@ -16,7 +16,10 @@
 	cag = commit --amend
 	# commit again no-edit
 	cagn = commit --amend --no-edit
+	sw = switch
+	swc = switch -c
 	s = status
+	ss = status -s
 	sv = status -v
 	svv = status -v -v
 	# stats
@@ -40,5 +43,8 @@
 	usa = restore --staged .
 	rebase-root = rebase -i --root
 	delete-alias = config --global --unset alias.ALI_NAME
+	ce = config --global -e
 [safe]
 	directory = /etc/nginx/sites-available
+[core]
+	editor = vi
