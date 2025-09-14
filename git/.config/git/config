@@ -28,6 +28,7 @@
 	ch = checkout
 	b = branch
 	ba = branch -a
+	br = branch -r
 	p = push
 	pl = pull
 	f = fetch
