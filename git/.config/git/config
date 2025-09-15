@@ -32,6 +32,8 @@
 	b = branch
 	ba = branch -a
 	br = branch -r
+	bm = branch --merged
+	bnm = branch --no-merged
 	p = push
 	pl = pull
 	f = fetch
@@ -45,6 +47,7 @@
 	delete-alias = config --global --unset alias.ALI_NAME
 	ce = config --global -e
 	dlb = !git checkout main && git pull --prune && git branch --merged | grep -v \"\\*\" | xargs -n 1 git branch -d
+	bclean = "!f() { branches=$(git branch --merged ${1-main} | grep -v " ${1-main}$"); [ -z \"$branches\" ] || git branch -d $branches; }; f"
 [safe]
 	directory = /etc/nginx/sites-available
 [core]
