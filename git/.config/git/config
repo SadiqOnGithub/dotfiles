@@ -1,5 +1,5 @@
 [user]
-	name = sadiq_from_latitude
+	name = sadiq_from_thinkpad
 	email = sadiqonemail@gmail.com
 [alias]
     # show alias
@@ -18,8 +18,8 @@
 	cagn = commit --amend --no-edit
 	sw = switch
 	swc = switch -c
-	s = status
-	ss = status -s
+	s = status -s
+	sl = status
 	sv = status -v
 	svv = status -v -v
 	# stats
