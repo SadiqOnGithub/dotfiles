@@ -12,13 +12,18 @@
 	# add & commit
 	ac = commit -am
 	c = commit -m
+	# fake commit
+	cf = commit --allow-empty
 	# commit again
 	cag = commit --amend
+	# fake commit again
+	cagf = commit --amend --allow-empty
 	# commit again no-edit
 	cagn = commit --amend --no-edit
 	sw = switch
 	swc = switch -c
 	s = status -s
+	# status long
 	sl = status
 	sv = status -v
 	svv = status -v -v
