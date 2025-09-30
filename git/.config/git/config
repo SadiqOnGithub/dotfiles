@@ -13,7 +13,7 @@
 	ac = commit -am
 	c = commit -m
 	# fake commit
-	cf = commit --allow-empty
+	cf = commit --allow-empty -m
 	# commit again
 	cag = commit --amend
 	# fake commit again
