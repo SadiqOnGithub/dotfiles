@@ -48,6 +48,8 @@
 	us = restore --staged
 	# unstage all
 	usa = restore --staged .
+	R = reset
+	RH = reset --hard
 	rebase-root = rebase -i --root
 	delete-alias = config --global --unset alias.ALI_NAME
 	ce = config --global -e
