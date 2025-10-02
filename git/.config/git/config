@@ -50,6 +50,7 @@
 	us = restore --staged
 	# unstage all
 	usa = restore --staged .
+	RS = reset --soft
 	R = reset
 	RH = reset --hard
 	rebase-root = rebase -i --root
