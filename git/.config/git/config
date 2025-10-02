@@ -9,6 +9,8 @@
 	a = add
 	# add all
 	aa = add .
+	# add patch
+	ap = add -p
 	# add & commit
 	ac = commit -am
 	c = commit -m
