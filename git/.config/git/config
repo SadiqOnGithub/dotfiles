@@ -39,6 +39,7 @@
 	b = branch
 	ba = branch -a
 	br = branch -r
+	bF = branch -f
 	bm = branch --merged
 	bnm = branch --no-merged
 	p = push
