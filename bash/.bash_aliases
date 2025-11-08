@@ -36,10 +36,13 @@ alias sa='eval "$(ssh-agent -s)" && ssh-add'
 
 # cargo bindings
 alias cn='cargo new'
+alias ca='cargo add'
+alias cu='cargo update'
 alias cr='cargo run'
 alias cb='cargo build'
 alias ch='cargo check'
 alias ct='cargo test'
+alias cdoc='cargo doc --open'
 # it tells you non-idiomatic code!
 alias cclp='cargo clippy'
 alias rust='evcxr'
@@ -71,6 +74,7 @@ alias doc='cd /home/sadiq/Documents/websites/docker'
 alias k8='cd /home/sadiq/Documents/websites/k8'
 alias irs='cd /home/sadiq/Documents/websites/iris'
 alias bali='zed /home/sadiq/.bash_aliases'
+alias brc='zed /home/sadiq/.bashrc'
 
 # bt folder bindings
 alias bt='cd /home/sadiq/Documents/websites/bt'
