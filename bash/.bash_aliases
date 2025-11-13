@@ -79,8 +79,8 @@ alias brc='zed /home/sadiq/.bashrc'
 
 # bt folder bindings
 alias bt='cd /home/sadiq/Documents/web/bt'
-alias mk='cd /home/sadiq/Documents/web/bt/mirakare'
-alias mkf='cd /home/sadiq/Documents/web/bt/mirakare/MKFrontWebApp'
+alias mk='cd /home/sadiq/Documents/web/bt/mk'
+alias mki='cd /home/sadiq/Documents/web/bt/mk/mk-infra'
 alias ai='cd /home/sadiq/Documents/web/bt/airah'
 alias aia='cd /home/sadiq/Documents/web/bt/airah/airah-admin-panel'
 
