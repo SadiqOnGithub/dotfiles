@@ -22,10 +22,10 @@ alias v='NVIM_APPNAME="nvim" nvim'
 # alias vl='NVIM_APPNAME="nvim-lazy" nvim'
 
 # system
-alias au='sudo apt update'
-alias aug='sudo apt upgrade'
+alias sau='sudo apt update'
+alias saug='sudo apt upgrade'
 alias asr='apt search'
-alias ain='sudo apt install'
+alias sai='sudo apt install'
 alias pag='ps aux | grep'
 
 
