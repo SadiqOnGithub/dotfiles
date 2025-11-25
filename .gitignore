@@ -1,2 +1,2 @@
-tmux/.config/tmux/plugins/tmux-resurrect
+config_to_stow/.config/tmux/plugins/tmux-resurrect
 work_history.txt
