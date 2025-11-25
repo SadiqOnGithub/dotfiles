@@ -1,9 +1,5 @@
 sudo apt install stow
-stow bash
-stow git
-stow tmux
-stow bin
-
+stow configs_to_stow
 
 git submodule update --init
 
