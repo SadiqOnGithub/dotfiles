@@ -1,5 +1,10 @@
 alias bs='source ~/.bash_aliases'
 
+
+# installed alias
+source ~/.config/kubectl-aliases/.kubectl_aliases
+
+
 # tools bindings
 alias clr='clear'
 alias cl='clear'
@@ -11,7 +16,6 @@ alias g='git'
 alias gtr='gnome-terminal'
 # auto completion for g alias
 # complete -o default -F __git_main g
-alias k=kubectl
 # auto completion for kubectl alias
 complete -o default -F __start_kubectl k
 alias cc='xclip -selection clipboard'
@@ -59,41 +63,45 @@ alias nrb='npm run build'
 alias nrt='npm run test'
 alias nrw='npm run web'
 
+# docker
 alias d='docker'
 alias dp='docker ps'
 alias dpa='docker ps -a'
 alias dco='docker compose up'
 alias dcd='docker compose down'
 
-# folder bindings
-alias sh='cd /home/sadiq/.ssh/'
-alias dot='cd /home/sadiq/dotfiles'
-alias conf='cd /home/sadiq/.config'
-alias des='cd /home/sadiq/Desktop'
-alias dest='cd /home/sadiq/Desktop/temp'
-alias down='cd /home/sadiq/Downloads'
-alias docu='cd /home/sadiq/Documents'
-alias gls='cd /home/sadiq/Documents/goals'
-alias web='cd /home/sadiq/Documents/web'
-alias oc='cd /home/sadiq/Documents/web/okhla-consultancy'
-alias vs='cd /home/sadiq/Documents/web/okhla-consultancy/vs-ecom'
-alias oss='cd /home/sadiq/Documents/web/oss'
-alias prac='cd /home/sadiq/Documents/web/prac'
-alias rus='cd /home/sadiq/Documents/web/prac/rust'
-alias rusp='cd /home/sadiq/Documents/web/prac/rust/rust-prac'
-alias 100x='cd /home/sadiq/Documents/web/100x'
-alias doc='cd /home/sadiq/Documents/web/docker'
-alias k8='cd /home/sadiq/Documents/web/k8'
-alias irs='cd /home/sadiq/Documents/web/iris'
-alias bali='vi /home/sadiq/.bash_aliases'
-alias brc='zed /home/sadiq/.bashrc'
+# kubectl
+alias k=kubectl
+
+# file and folder bindings
+alias brc='vi ~/.bashrc'
+alias bali='vi ~/.bash_aliases'
+alias sh='cd ~/.ssh/'
+alias dot='cd ~/dotfiles'
+alias conf='cd ~/.config'
+alias des='cd ~/Desktop'
+alias dest='cd ~/Desktop/temp'
+alias down='cd ~/Downloads'
+alias docu='cd ~/Documents'
+alias gls='cd ~/Documents/goals'
+alias web='cd ~/Documents/web'
+alias oc='cd ~/Documents/web/okhla-consultancy'
+alias vs='cd ~/Documents/web/okhla-consultancy/vs-ecom'
+alias oss='cd ~/Documents/web/oss'
+alias prac='cd ~/Documents/web/prac'
+alias rus='cd ~/Documents/web/prac/rust'
+alias rusp='cd ~/Documents/web/prac/rust/rust-prac'
+alias 100x='cd ~/Documents/web/100x'
+alias doc='cd ~/Documents/web/docker'
+alias k8='cd ~/Documents/web/k8'
+alias irs='cd ~/Documents/web/iris'
 
 # bt folder bindings
-alias bt='cd /home/sadiq/Documents/web/bt'
-alias mk='cd /home/sadiq/Documents/web/bt/mk'
-alias mki='cd /home/sadiq/Documents/web/bt/mk/mk-infra'
-alias ai='cd /home/sadiq/Documents/web/bt/airah'
-alias aia='cd /home/sadiq/Documents/web/bt/airah/airah-admin-panel'
+alias bt='cd ~/Documents/web/bt'
+alias mk='cd ~/Documents/web/bt/mk'
+alias mki='cd ~/Documents/web/bt/mk/mk-infra'
+alias ai='cd ~/Documents/web/bt/airah'
+alias aia='cd ~/Documents/web/bt/airah/airah-admin-panel'
 
 
 # functions
