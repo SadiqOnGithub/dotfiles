@@ -1,4 +1,5 @@
 alias bs='source ~/.bash_aliases'
+
 # tools bindings
 alias clr='clear'
 alias cl='clear'
@@ -58,9 +59,16 @@ alias nrb='npm run build'
 alias nrt='npm run test'
 alias nrw='npm run web'
 
+alias d='docker'
+alias dp='docker ps'
+alias dpa='docker ps -a'
+alias dco='docker compose up'
+alias dcd='docker compose down'
+
 # folder bindings
 alias sh='cd /home/sadiq/.ssh/'
 alias dot='cd /home/sadiq/dotfiles'
+alias conf='cd /home/sadiq/.config'
 alias des='cd /home/sadiq/Desktop'
 alias dest='cd /home/sadiq/Desktop/temp'
 alias down='cd /home/sadiq/Downloads'
