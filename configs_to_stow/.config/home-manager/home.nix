@@ -9,6 +9,7 @@
   home.packages = with pkgs; [
     eza
     bat
+    i3
 #   fd
 #   ripgrep
   ];
