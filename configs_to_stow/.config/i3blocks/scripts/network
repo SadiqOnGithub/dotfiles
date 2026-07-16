@@ -1,0 +1,28 @@
+#!/bin/bash
+
+interface=$(ip route | grep default | awk '{print $5}' | head -n1)
+
+rx1=$(cat /sys/class/net/$interface/statistics/rx_bytes 2>/dev/null || echo 0)
+tx1=$(cat /sys/class/net/$interface/statistics/tx_bytes 2>/dev/null || echo 0)
+
+sleep 1
+
+rx2=$(cat /sys/class/net/$interface/statistics/rx_bytes 2>/dev/null || echo 0)
+tx2=$(cat /sys/class/net/$interface/statistics/tx_bytes 2>/dev/null || echo 0)
+
+rx_diff=$(( (rx2 - rx1) / 1024 ))
+tx_diff=$(( (tx2 - tx1) / 1024 ))
+
+if [ $rx_diff -ge 1024 ]; then
+    rx="$(echo "scale=1; $rx_diff/1024" | bc)MB/s"
+else
+    rx="${rx_diff}KB/s"
+fi
+
+if [ $tx_diff -ge 1024 ]; then
+    tx="$(echo "scale=1; $tx_diff/1024" | bc)MB/s"
+else
+    tx="${tx_diff}KB/s"
+fi
+
+echo " ↓ $rx ↑ $tx"

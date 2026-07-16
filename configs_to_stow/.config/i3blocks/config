@@ -1,0 +1,43 @@
+command=~/.config/i3blocks/scripts/$BLOCK_NAME
+separator_block_width=15
+markup=pango
+
+[ipv6]
+command=ip -6 addr show scope global | grep -oP 'inet6 \K[^/]+' | head -n1
+interval=30
+
+[wireless]
+command=~/.config/i3blocks/scripts/wireless
+interval=5
+
+[ethernet]
+command=echo "E: down"
+interval=10
+
+[battery]
+command=~/.config/i3blocks/scripts/battery
+interval=30
+
+[memory]
+command=free -h | awk 'NR==2{printf "%s", $3}'
+interval=10
+
+[load]
+command=cat /proc/loadavg | awk '{print $1}'
+interval=10
+
+[disk_root]
+command=df -h / | awk 'NR==2{printf "%s", $4}'
+interval=30
+
+[disk_home]
+command=df -h /home | awk 'NR==2{printf "%s", $4}'
+interval=30
+
+[cpu]
+command=top -bn1 | grep "Cpu(s)" | awk '{printf "%.1f%%", $2 + $4}'
+interval=10
+
+[date]
+command=date '+%Y-%m-%d %H:%M:%S'
+interval=1

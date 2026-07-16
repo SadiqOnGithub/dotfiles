@@ -15,7 +15,7 @@
 
 
    # statusBar
-   # i3status-rust (installed via programs.i3status-rust.enable)
+   i3blocks
 
    # screenshot for i3
    flameshot

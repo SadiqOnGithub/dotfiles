@@ -1,0 +1,22 @@
+#!/bin/bash
+
+bat_path="/sys/class/power_supply/BAT0"
+
+if [ -d "$bat_path" ]; then
+    status=$(cat "$bat_path/status")
+    capacity=$(cat "$bat_path/capacity")
+    energy=$(cat "$bat_path/energy_now" 2>/dev/null)
+    power=$(cat "$bat_path/power_now" 2>/dev/null)
+
+    if [ -n "$energy" ] && [ -n "$power" ] && [ "$power" -gt 0 ]; then
+        hours=$((energy / power))
+        minutes=$(( (energy % power) * 60 / power ))
+        remaining=$(printf "%02d:%02d" $hours $minutes)
+    else
+        remaining=""
+    fi
+
+    echo "$status ${capacity}% $remaining"
+else
+    echo "AC"
+fi
