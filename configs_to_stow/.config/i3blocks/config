@@ -14,6 +14,22 @@ interval=5
 command=echo "E: down"
 interval=10
 
+[cpu_temp]
+command=~/.config/i3blocks/scripts/cpu_temp
+interval=5
+
+[fan]
+command=~/.config/i3blocks/scripts/fan
+interval=5
+
+[bluetooth]
+command=~/.config/i3blocks/scripts/bluetooth
+interval=10
+
+[vpn]
+command=~/.config/i3blocks/scripts/vpn
+interval=10
+
 [battery]
 command=~/.config/i3blocks/scripts/battery
 interval=30
@@ -37,6 +53,14 @@ interval=30
 [cpu]
 command=top -bn1 | grep "Cpu(s)" | awk '{printf "%.1f%%", $2 + $4}'
 interval=10
+
+[keyboard]
+command=~
+interval=once
+
+[uptime]
+command=uptime -p | sed 's/up //'
+interval=60
 
 [date]
 command=date '+%Y-%m-%d %H:%M:%S'

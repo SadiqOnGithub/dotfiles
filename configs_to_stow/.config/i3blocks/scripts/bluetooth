@@ -1,0 +1,13 @@
+#!/bin/bash
+
+bt_status=$(bluetoothctl show 2>/dev/null | grep "Powered" | awk '{print $2}')
+if [ "$bt_status" = "yes" ]; then
+    device=$(bluetoothctl devices Connected 2>/dev/null | head -n1 | awk '{print $3}')
+    if [ -n "$device" ]; then
+        echo "BT: $device"
+    else
+        echo "BT: on"
+    fi
+else
+    echo "BT: off"
+fi
