@@ -14,6 +14,10 @@ interval=5
 command=~/.config/i3blocks/scripts/ethernet
 interval=10
 
+[network_speed]
+command=~/.config/i3blocks/scripts/network_speed
+interval=5
+
 [cpu_temp]
 command=~/.config/i3blocks/scripts/cpu_temp
 interval=5
@@ -35,7 +39,7 @@ command=~/.config/i3blocks/scripts/battery
 interval=30
 
 [memory]
-command=free -h | awk 'NR==2{printf "%s", $3}'
+command=free | awk 'NR==2{u=$3/1048576; t=$2/1048576; printf "%.1fG/%.1fG (%d%%)", u, t, u*100/t}'
 interval=10
 
 [load]
@@ -43,11 +47,11 @@ command=cat /proc/loadavg | awk '{print $1}'
 interval=10
 
 [disk_root]
-command=df -h / | awk 'NR==2{printf "%s", $4}'
+command=df / | awk 'NR==2{u=$3/1048576; t=$2/1048576; printf "%.1fG/%.1fG (%d%%)", u, t, u*100/t}'
 interval=30
 
 [disk_home]
-command=df -h /home | awk 'NR==2{printf "%s", $4}'
+command=df /home | awk 'NR==2{u=$3/1048576; t=$2/1048576; printf "%.1fG/%.1fG (%d%%)", u, t, u*100/t}'
 interval=30
 
 [cpu]

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+STATE_FILE="/tmp/i3blocks_net_speed"
+
+iface=$(ip route get 1.1.1.1 2>/dev/null | awk '{for(i=1;i<=NF;i++) if($i=="dev") print $(i+1)}')
+if [ -z "$iface" ]; then
+    echo "Net: no route"
+    exit 0
+fi
+
+rx_now=$(cat "/sys/class/net/$iface/statistics/rx_bytes" 2>/dev/null)
+tx_now=$(cat "/sys/class/net/$iface/statistics/tx_bytes" 2>/dev/null)
+time_now=$(date +%s)
+
+if [ -f "$STATE_FILE" ]; then
+    read -r rx_prev tx_prev time_prev < "$STATE_FILE"
+    elapsed=$((time_now - time_prev))
+    if [ "$elapsed" -gt 0 ]; then
+        rx_delta=$(( (rx_now - rx_prev) / elapsed ))
+        tx_delta=$(( (tx_now - tx_prev) / elapsed ))
+    else
+        rx_delta=0
+        tx_delta=0
+    fi
+else
+    rx_delta=0
+    tx_delta=0
+fi
+
+echo "$rx_now $tx_now $time_now" > "$STATE_FILE"
+
+human_readable() {
+    local bytes=$1
+    if [ "$bytes" -ge 1048576 ]; then
+        printf "%.1fMB/s" "$(echo "scale=1; $bytes/1048576" | bc)"
+    elif [ "$bytes" -ge 1024 ]; then
+        printf "%.0fKB/s" "$(echo "scale=0; $bytes/1024" | bc)"
+    else
+        printf "%dB/s" "$bytes"
+    fi
+}
+
+echo "↓$(human_readable $rx_delta) ↑$(human_readable $tx_delta)"
