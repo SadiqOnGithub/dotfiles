@@ -18,10 +18,6 @@ interval=10
 command=~/.config/i3blocks/scripts/network_speed
 interval=5
 
-[cpu_temp]
-command=~/.config/i3blocks/scripts/cpu_temp
-interval=5
-
 [fan]
 command=~/.config/i3blocks/scripts/fan
 interval=5
@@ -55,8 +51,8 @@ command=df /home | awk 'NR==2{u=$3/1048576; t=$2/1048576; printf "%.1fG/%.1fG (%
 interval=30
 
 [cpu]
-command=top -bn1 | grep "Cpu(s)" | awk '{printf "%.1f%%", $2 + $4}'
-interval=10
+command=top -bn1 | grep "Cpu(s)" | awk -v t="$(awk '{printf "%d", $1/1000}' /sys/class/thermal/thermal_zone0/temp)" '{printf "%.1f%% %d°C", $2+$4, t}'
+interval=5
 
 [keyboard]
 command=~/.config/i3blocks/scripts/keyboard
