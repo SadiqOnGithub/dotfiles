@@ -38,10 +38,6 @@ interval=30
 command=free | awk 'NR==2{u=$3/1048576; t=$2/1048576; printf "%.1fG/%.1fG (%d%%)", u, t, u*100/t}'
 interval=10
 
-[load]
-command=cat /proc/loadavg | awk '{print $1}'
-interval=10
-
 [disk_root]
 command=df / | awk 'NR==2{u=$3/1048576; t=$2/1048576; printf "%.1fG/%.1fG (%d%%)", u, t, u*100/t}'
 interval=30
@@ -51,7 +47,7 @@ command=df /home | awk 'NR==2{u=$3/1048576; t=$2/1048576; printf "%.1fG/%.1fG (%
 interval=30
 
 [cpu]
-command=temp=$(awk '{printf "%d", $1/1000}' /sys/class/thermal/thermal_zone0/temp); top -bn1 | grep "Cpu(s)" | awk -v t="$temp" '{printf "%.1f%% %d°C", $2+$4, t}'
+command=temp=$(awk '{printf "%d", $1/1000}' /sys/class/thermal/thermal_zone0/temp); load=$(awk '{print $1}' /proc/loadavg); top -bn1 | grep "Cpu(s)" | awk -v t="$temp" -v l="$load" '{printf "%.1f%% %d°C %s load", $2+$4, t, l}'
 interval=5
 
 [keyboard]
