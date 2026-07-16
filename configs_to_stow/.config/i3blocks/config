@@ -51,7 +51,7 @@ command=df /home | awk 'NR==2{u=$3/1048576; t=$2/1048576; printf "%.1fG/%.1fG (%
 interval=30
 
 [cpu]
-command=top -bn1 | grep "Cpu(s)" | awk -v t="$(awk '{printf "%d", $1/1000}' /sys/class/thermal/thermal_zone0/temp)" '{printf "%.1f%% %d°C", $2+$4, t}'
+command=temp=$(awk '{printf "%d", $1/1000}' /sys/class/thermal/thermal_zone0/temp); top -bn1 | grep "Cpu(s)" | awk -v t="$temp" '{printf "%.1f%% %d°C", $2+$4, t}'
 interval=5
 
 [keyboard]
