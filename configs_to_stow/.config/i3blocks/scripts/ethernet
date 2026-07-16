@@ -1,0 +1,15 @@
+#!/bin/bash
+
+iface=$(ip link show | grep -oP '^\d+: \K(en|eth)\S+' | head -n1)
+if [ -z "$iface" ]; then
+    echo "E: none"
+    exit 0
+fi
+
+state=$(cat "/sys/class/net/$iface/operstate" 2>/dev/null)
+if [ "$state" = "up" ]; then
+    ip=$(ip -4 addr show "$iface" 2>/dev/null | grep -oP 'inet \K\S+' | head -n1)
+    echo "E: ${ip:-connected}"
+else
+    echo "E: down"
+fi
