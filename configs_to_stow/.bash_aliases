@@ -4,7 +4,6 @@ alias bs='source ~/.bash_aliases'
 # installed alias
 source ~/.config/kubectl-aliases/.kubectl_aliases
 
-
 # tools bindings
 alias clr='clear'
 alias cl='clear'
@@ -16,8 +15,6 @@ alias g='git'
 alias gtr='gnome-terminal'
 # auto completion for g alias
 # complete -o default -F __git_main g
-# auto completion for kubectl alias
-complete -o default -F __start_kubectl k
 alias cc='xclip -selection clipboard'
 alias gcn='git log --reverse --format="%H" HEAD..master | head -1 | xargs git checkout'
 alias gcp='git checkout HEAD~1'
@@ -53,15 +50,15 @@ alias cclp='cargo clippy'
 alias rust='evcxr'
 
 # npm bindings
-alias ni='npm i'
-alias nif='npm i --force'
-alias nci='npm ci'
-alias ncif='npm ci --force'
-alias nrd='npm run dev'
-alias nrs='npm run start'
-alias nrb='npm run build'
-alias nrt='npm run test'
-alias nrw='npm run web'
+alias ni='pnpm i'
+alias nif='pnpm i --force'
+alias nci='pnpm ci'
+alias ncif='pnpm ci --force'
+alias nrd='pnpm run dev'
+alias nrs='pnpm run start'
+alias nrb='pnpm run build'
+alias nrt='pnpm run test'
+alias nrw='pnpm run web'
 
 # docker
 alias d='docker'
@@ -71,7 +68,11 @@ alias dco='docker compose up'
 alias dcd='docker compose down'
 
 # kubectl
-alias k=kubectl
+alias kali='vi ~/.config/kubectl-aliases/.kubectl_aliases'
+alias kalig='cat ~/.config/kubectl-aliases/.kubectl_aliases | grep'
+# alias k=kubectl
+# auto completion for kubectl alias
+# complete -o default -F __start_kubectl k
 
 # file and folder bindings
 alias brc='vi ~/.bashrc'
