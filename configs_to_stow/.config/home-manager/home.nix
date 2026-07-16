@@ -9,10 +9,10 @@
   home.packages = with pkgs; [
     eza
     bat
-#   i3
 #   fd
 #   ripgrep
 
+    rofi
 
    # statusBar
    i3blocks
@@ -21,8 +21,8 @@
    flameshot
    #scrot
 
-   
 
+  
 
   ];
 
