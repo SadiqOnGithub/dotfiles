@@ -214,6 +214,7 @@ exec --no-startup-id dunst
 # dunst keybindings
 bindsym $mod+grave exec dunstctl close
 bindsym $mod+shift+grave exec dunstctl history-pop
+bindsym $mod+m exec dunstctl set-paused toggle
 
 # screenshot
 bindsym Print exec --no-startup-id flameshot gui
