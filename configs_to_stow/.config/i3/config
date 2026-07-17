@@ -217,5 +217,8 @@ bindsym $mod+shift+grave exec dunstctl history-pop
 bindsym $mod+ctrl+grave exec dunstctl close-all
 bindsym $mod+m exec dunstctl set-paused toggle
 
+# screen lock
+bindsym $mod+ctrl+l exec LC_ALL=en_US.UTF-8 i3lock
+
 # screenshot
 bindsym Print exec --no-startup-id flameshot gui

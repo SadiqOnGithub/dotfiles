@@ -29,6 +29,10 @@
     # notification daemon for i3
     dunst
     libnotify
+
+    # screen lock for i3
+    # already installed system-wide as a dependency of i3 (apt)
+    # i3lock
   ];
 
 #  programs.git.enable = true;
