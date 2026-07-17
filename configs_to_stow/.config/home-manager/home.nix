@@ -197,6 +197,163 @@
     };
   };
 
+  programs.bash = {
+    enable = true;
+    shellAliases = {
+      # reload
+      bs = "source ~/.bashrc";
+
+      # tools
+      clr = "clear";
+      cl  = "clear";
+      c   = "code";
+      zc  = "zed . && exit";
+      z   = "zed";
+      g   = "git";
+      gtr = "gnome-terminal";
+      cc  = "xclip -selection clipboard";
+      gcn = ''git log --reverse --format="%H" HEAD..master | head -1 | xargs git checkout'';
+      gcp = "git checkout HEAD~1";
+      t   = "tmux";
+      v   = "NVIM_APPNAME=\"nvim\" nvim";
+
+      # system
+      sau = "sudo apt update";
+      saug = "sudo apt upgrade";
+      asr = "apt search";
+      sai = "sudo apt install";
+      pag = "ps aux | grep";
+
+      # ssh
+      s   = "ssh";
+      srv = "ssh srv";
+      sa  = ''eval "$(ssh-agent -s)" && ssh-add'';
+
+      # cargo
+      cn   = "cargo new";
+      ca   = "cargo add";
+      cu   = "cargo update";
+      cr   = "cargo run";
+      cb   = "cargo build";
+      ch   = "cargo check";
+      ct   = "cargo test";
+      cdoc = "cargo doc --open";
+      cclp = "cargo clippy";
+      rust = "evcxr";
+
+      # npm/pnpm
+      ni   = "pnpm i";
+      nif  = "pnpm i --force";
+      nci  = "pnpm ci";
+      ncif = "pnpm ci --force";
+      nrd  = "pnpm run dev";
+      nrs  = "pnpm run start";
+      nrb  = "pnpm run build";
+      nrt  = "pnpm run test";
+      nrw  = "pnpm run web";
+
+      # docker
+      d   = "docker";
+      dp  = "docker ps";
+      dpa = "docker ps -a";
+      dco = "docker compose up";
+      dcd = "docker compose down";
+
+      # kubectl
+      kali = "vi ~/.config/kubectl-aliases/.kubectl_aliases";
+      kalig = "cat ~/.config/kubectl-aliases/.kubectl_aliases | grep";
+
+      # directories
+      brc  = "vi ~/.bashrc";
+      bali = "vi ~/.bash_aliases";
+      sh   = "cd ~/.ssh/";
+      dot  = "cd ~/dotfiles";
+      conf = "cd ~/.config";
+      home = "cd ~/.config/home-manager";
+      vi3  = "cd ~/.config/i3";
+      des  = "cd ~/Desktop";
+      dest = "cd ~/Desktop/temp";
+      down = "cd ~/Downloads";
+      docu = "cd ~/Documents";
+      gls  = "cd ~/Documents/goals";
+      web  = "cd ~/Documents/web";
+      oc   = "cd ~/Documents/web/okhla-consultancy";
+      vs   = "cd ~/Documents/web/okhla-consultancy/vs-ecom";
+      oss  = "cd ~/Documents/web/oss";
+      prac = "cd ~/Documents/web/prac";
+      rus  = "cd ~/Documents/web/prac/rust";
+      rusp = "cd ~/Documents/web/prac/rust/rust-prac";
+      "100x" = "cd ~/Documents/web/100x";
+      doc  = "cd ~/Documents/web/docker";
+      k8   = "cd ~/Documents/web/k8";
+      irs  = "cd ~/Documents/web/iris";
+
+      # bt folders
+      bt   = "cd ~/Documents/web/bt";
+      mk   = "cd ~/Documents/web/bt/mk";
+      mki  = "cd ~/Documents/web/bt/mk/mk-infra";
+      ai   = "cd ~/Documents/web/bt/airah";
+      aia  = "cd ~/Documents/web/bt/airah/airah-admin-panel";
+    };
+
+    initExtra = ''
+      # source kubectl aliases
+      source ~/.config/kubectl-aliases/.kubectl_aliases
+
+      # history grep
+      hg() {
+        history | grep "$1"
+      }
+      # list grep
+      lg() {
+        ll | grep "$1"
+      }
+      # find dir
+      fd() {
+        find . -type d -name "*$1*"
+      }
+      # find file
+      ff() {
+        find . -type f -name "*$1*"
+      }
+
+      # PORT forwarding
+      pf() {
+        ssh -N -L "$1":localhost:"$1" "$2"
+      }
+
+      psf() {
+        local remote_host="$1"
+        shift
+        for local_port in "$@"; do
+          ssh -N -L "$local_port":localhost:"$local_port" "$remote_host" &
+        done
+      }
+
+      list_forwarded_ports() {
+        lsof -i -n -P | grep 'LISTEN'
+      }
+
+      stop_pf() {
+        local port=$1
+        if [[ -z "$port" ]]; then
+          echo "Usage: stop_pf PORT"
+          return 1
+        fi
+        local pid=$(lsof -ti tcp:"$port" -sTCP:LISTEN)
+        if [[ -n "$pid" ]]; then
+          kill "$pid"
+          echo "Port forwarding on port $port stopped."
+        else
+          echo "No active port forwarding found on port $port."
+        fi
+      }
+
+      # Yellow user@host, Cyan folder
+      PS1='\[\e[1;33m\]\u@\h \[\e[1;36m\]\W\[\e[0m\] \$ '
+    '';
+  };
+
   programs.home-manager.enable = true;
 
 }

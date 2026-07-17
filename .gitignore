@@ -1,3 +1,4 @@
 configs_to_stow/.config/tmux
 configs_to_stow/.config/git/config
+configs_to_stow/.bash_aliases
 work_history.txt
