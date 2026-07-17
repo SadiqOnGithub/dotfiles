@@ -35,19 +35,19 @@ command=~/.config/i3blocks/scripts/battery
 interval=30
 
 [memory]
-command=free | awk 'NR==2{u=$3/1048576; t=$2/1048576; printf "%.1fG/%.1fG (%d%%)", u, t, u*100/t}'
+command=~/.config/i3blocks/scripts/memory
 interval=10
 
 [disk_root]
-command=df / | awk 'NR==2{u=$3/1048576; t=$2/1048576; printf "%.1fG/%.1fG (%d%%)", u, t, u*100/t}'
+command=~/.config/i3blocks/scripts/disk_root /
 interval=30
 
 [disk_home]
-command=df /home | awk 'NR==2{u=$3/1048576; t=$2/1048576; printf "%.1fG/%.1fG (%d%%)", u, t, u*100/t}'
+command=~/.config/i3blocks/scripts/disk_home /home
 interval=30
 
 [cpu]
-command=temp=$(awk '{printf "%d", $1/1000}' /sys/class/thermal/thermal_zone0/temp); load=$(awk '{print $1}' /proc/loadavg); top -bn1 | grep "Cpu(s)" | awk -v t="$temp" -v l="$load" '{printf "%.1f%% %d°C %s load", $2+$4, t, l}'
+command=~/.config/i3blocks/scripts/cpu
 interval=5
 
 [keyboard]

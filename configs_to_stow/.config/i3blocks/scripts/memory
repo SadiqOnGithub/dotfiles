@@ -1,0 +1,2 @@
+#!/bin/bash
+free | awk 'NR==2{u=$3/1048576; t=$2/1048576; printf "%.1fG/%.1fG (%d%%)\n", u, t, u*100/t}'

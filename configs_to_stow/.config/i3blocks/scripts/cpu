@@ -1,0 +1,4 @@
+#!/bin/bash
+temp=$(awk '{printf "%d", $1/1000}' /sys/class/thermal/thermal_zone0/temp)
+load=$(awk '{print $1}' /proc/loadavg)
+top -bn1 | grep "Cpu(s)" | awk -v t="$temp" -v l="$load" '{printf "%.1f%% %d°C %s load\n", $2+$4, t, l}'
