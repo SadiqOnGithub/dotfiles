@@ -1,3 +1,0 @@
-[submodule "configs_to_stow/.config/tmux/plugins/tpm"]
-	path = configs_to_stow/.config/tmux/plugins/tpm
-	url = https://github.com/tmux-plugins/tpm
