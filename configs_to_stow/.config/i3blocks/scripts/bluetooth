@@ -8,6 +8,4 @@ if [ "$bt_status" = "yes" ]; then
     else
         echo "BT: on"
     fi
-else
-    echo "BT: off"
 fi

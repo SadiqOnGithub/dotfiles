@@ -5,7 +5,5 @@ if [ -n "$essid" ]; then
     ip=$(ip route get 1 2>/dev/null | grep -oP 'src \K\S+')
     signal=$(iwconfig 2>/dev/null | grep -oP 'Signal level=\K[^ ]+' | head -n1)
     quality=$(echo "$signal" | awk '{printf "%.0f", ($1+100)/2}')
-    echo "W $quality% $ip"
-else
-    echo "W: down"
+    echo "W $essid $quality% $ip"
 fi
