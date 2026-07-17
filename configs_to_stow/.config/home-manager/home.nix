@@ -25,8 +25,7 @@
     # screenshot tool for i3
     flameshot
 
-    # notification daemon for i3
-    dunst
+    # notification utility
     libnotify
 
     # gtk settings daemon for i3 (applies theme to gtk apps)
@@ -39,6 +38,7 @@
     ./modules/bash.nix
     ./modules/yazi.nix
     ./modules/gtk.nix
+    ./modules/dunst.nix
   ];
 
   programs.home-manager.enable = true;
