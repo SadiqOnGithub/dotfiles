@@ -39,12 +39,14 @@ command=~/.config/i3blocks/scripts/memory
 interval=10
 
 [disk_root]
+# / and /home share the same partition on this system
 command=~/.config/i3blocks/scripts/disk_root /
 interval=30
 
-[disk_home]
-command=~/.config/i3blocks/scripts/disk_home /home
-interval=30
+# [disk_home]
+# uncomment if /home is on a separate partition
+# command=~/.config/i3blocks/scripts/disk_home /home
+# interval=30
 
 [cpu]
 command=~/.config/i3blocks/scripts/cpu
