@@ -1,0 +1,6 @@
+#!/bin/bash
+
+count=$(gh api notifications 2>/dev/null | python3 -c "import sys,json; print(len(json.load(sys.stdin)))" 2>/dev/null)
+if [ -n "$count" ] && [ "$count" -gt 0 ]; then
+    echo "⚙  $count"
+fi

@@ -18,13 +18,21 @@ interval=10
 command=~/.config/i3blocks/scripts/vpn
 interval=10
 
+[dns]
+command=~/.config/i3blocks/scripts/dns
+interval=30
+
+[latency]
+command=~/.config/i3blocks/scripts/latency
+interval=30
+
 [network_speed]
 command=~/.config/i3blocks/scripts/network_speed
-interval=5
+interval=1
 
 [cpu]
 command=~/.config/i3blocks/scripts/cpu
-interval=5
+interval=1
 
 [memory]
 command=~/.config/i3blocks/scripts/memory
@@ -43,6 +51,30 @@ interval=30
 [fan]
 command=~/.config/i3blocks/scripts/fan
 interval=5
+
+[docker]
+command=~/.config/i3blocks/scripts/docker
+interval=10
+
+[k8s]
+command=~/.config/i3blocks/scripts/k8s
+interval=10
+
+[updates]
+command=~/.config/i3blocks/scripts/updates
+interval=3600
+
+[systemd]
+command=~/.config/i3blocks/scripts/systemd
+interval=300
+
+[ssh]
+command=~/.config/i3blocks/scripts/ssh
+interval=30
+
+[github]
+command=~/.config/i3blocks/scripts/github
+interval=300
 
 [bluetooth]
 command=~/.config/i3blocks/scripts/bluetooth

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+time=$(dig +time=2 +tries=1 google.com 2>/dev/null | grep "Query time:" | awk '{print $4}')
+if [ -n "$time" ]; then
+    echo "DNS ${time}ms"
+fi

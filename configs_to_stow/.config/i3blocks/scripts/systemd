@@ -1,0 +1,6 @@
+#!/bin/bash
+
+failed=$(systemctl --failed --no-legend --no-pager 2>/dev/null | wc -l)
+if [ "$failed" -gt 0 ]; then
+    echo "❌ $failed"
+fi

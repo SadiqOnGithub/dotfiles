@@ -1,4 +1,5 @@
 #!/bin/bash
 temp=$(awk '{printf "%d", $1/1000}' /sys/class/thermal/thermal_zone0/temp)
 load=$(awk '{print $1}' /proc/loadavg)
-top -bn1 | grep "Cpu(s)" | awk -v t="$temp" -v l="$load" '{printf "%.1f%% %d°C %s\n", $2+$4, t, l}'
+freq=$(awk '/cpu MHz/ {printf "%.1f", $4/1000; exit}' /proc/cpuinfo)
+top -bn1 | grep "Cpu(s)" | awk -v t="$temp" -v l="$load" -v f="$freq" '{printf "%.1f%% %d°C %s %sGHz\n", $2+$4, t, l, f}'

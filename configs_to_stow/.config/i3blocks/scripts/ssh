@@ -1,0 +1,6 @@
+#!/bin/bash
+
+count=$(who | grep -c "(.*)" 2>/dev/null)
+if [ "$count" -gt 0 ]; then
+    echo "SSH $count"
+fi
