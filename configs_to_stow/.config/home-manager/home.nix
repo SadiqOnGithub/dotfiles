@@ -22,6 +22,9 @@
     # status bar for i3
     i3blocks
 
+    # brightness control for i3
+    brightnessctl
+
     # screenshot tool for i3
     flameshot
     #scrot
