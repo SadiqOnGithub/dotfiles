@@ -55,8 +55,13 @@ bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Shift+q kill
 bindsym alt+F4 kill
 
-# start rofi (a program launcher)
-bindsym $mod+d exec --no-startup-id rofi -show drun
+# rofi launcher
+bindsym $mod+d exec --no-startup-id rofi -show drun       # application launcher
+bindsym $mod+Shift+d exec --no-startup-id rofi -show run   # run command
+bindsym $mod+Shift+w exec --no-startup-id rofi -show window # window switcher
+bindsym $mod+Shift+s exec --no-startup-id rofi -show ssh    # ssh launcher
+bindsym $mod+c exec --no-startup-id greenclip print | rofi -dmenu -p "Clipboard"  # clipboard manager
+bindsym Mod1+F2 exec --no-startup-id rofi -show run          # run command (alt)
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -196,4 +201,7 @@ exec_always --no-startup-id sh -c 'sleep 2 && xinput set-prop "ETPS/2 Elantech T
 
 # flameshot daemon (required for copy-to-clipboard to work)
 exec --no-startup-id flameshot
+
+# greenclip daemon (clipboard manager for rofi)
+exec_always --no-startup-id /home/sadiq/.nix-profile/bin/greenclip daemon
 bindsym Print exec --no-startup-id flameshot gui
