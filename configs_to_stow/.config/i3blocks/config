@@ -2,9 +2,9 @@ command=~/.config/i3blocks/scripts/$BLOCK_NAME
 separator_block_width=15
 markup=pango
 
-[ipv6]
-command=ip -6 addr show scope global | grep -oP 'inet6 \K[^/]+' | head -n1
-interval=30
+# [ipv6]
+# command=ip -6 addr show scope global | grep -oP 'inet6 \K[^/]+' | head -n1
+# interval=30
 
 [wireless]
 command=~/.config/i3blocks/scripts/wireless
@@ -48,9 +48,9 @@ interval=5
 command=~/.config/i3blocks/scripts/bluetooth
 interval=10
 
-[keyboard]
-command=~/.config/i3blocks/scripts/keyboard
-interval=once
+# [keyboard]
+# command=~/.config/i3blocks/scripts/keyboard
+# interval=once
 
 [battery]
 command=~/.config/i3blocks/scripts/battery
