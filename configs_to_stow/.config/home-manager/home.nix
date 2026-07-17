@@ -77,6 +77,17 @@
 #  programs.git.enable = true;
 #  programs.tmux.enable = true;
 
+  programs.yazi = {
+    enable = true;
+    enableBashIntegration = true;
+    settings = {
+      mgr = {
+        show_hidden = true;
+        sort_dir_first = true;
+      };
+    };
+  };
+
   programs.home-manager.enable = true;
 
 }
