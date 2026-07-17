@@ -18,6 +18,10 @@ if [ -d "$bat_path" ]; then
 
     if [ "$status" = "Charging" ]; then
         echo "↑${capacity}% $remaining"
+    elif [ "$status" = "Not charging" ]; then
+        echo "AC ${capacity}%"
+    elif [ "$status" = "Full" ]; then
+        echo "AC ${capacity}%"
     else
         echo "↓${capacity}% $remaining"
     fi
