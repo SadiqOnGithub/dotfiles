@@ -207,4 +207,7 @@ exec --no-startup-id flameshot
 
 # greenclip daemon (clipboard manager for rofi)
 exec_always --no-startup-id /home/sadiq/.nix-profile/bin/greenclip daemon
+
+# notification daemon
+exec --no-startup-id dunst
 bindsym Print exec --no-startup-id flameshot gui

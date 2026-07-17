@@ -25,6 +25,10 @@
     # screenshot tool for i3
     flameshot
     #scrot
+
+    # notification daemon for i3
+    dunst
+    libnotify
   ];
 
 #  programs.git.enable = true;
