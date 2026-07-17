@@ -14,25 +14,17 @@ interval=5
 command=~/.config/i3blocks/scripts/ethernet
 interval=10
 
-[network_speed]
-command=~/.config/i3blocks/scripts/network_speed
-interval=5
-
-[fan]
-command=~/.config/i3blocks/scripts/fan
-interval=5
-
-[bluetooth]
-command=~/.config/i3blocks/scripts/bluetooth
-interval=10
-
 [vpn]
 command=~/.config/i3blocks/scripts/vpn
 interval=10
 
-[battery]
-command=~/.config/i3blocks/scripts/battery
-interval=30
+[network_speed]
+command=~/.config/i3blocks/scripts/network_speed
+interval=5
+
+[cpu]
+command=~/.config/i3blocks/scripts/cpu
+interval=5
 
 [memory]
 command=~/.config/i3blocks/scripts/memory
@@ -48,13 +40,21 @@ interval=30
 # command=~/.config/i3blocks/scripts/disk_home /home
 # interval=30
 
-[cpu]
-command=~/.config/i3blocks/scripts/cpu
+[fan]
+command=~/.config/i3blocks/scripts/fan
 interval=5
+
+[bluetooth]
+command=~/.config/i3blocks/scripts/bluetooth
+interval=10
 
 [keyboard]
 command=~/.config/i3blocks/scripts/keyboard
 interval=once
+
+[battery]
+command=~/.config/i3blocks/scripts/battery
+interval=30
 
 [uptime]
 command=awk '{h=int($1/3600); m=int(($1%3600)/60); printf "%dh %dm\n", h, m}' /proc/uptime
