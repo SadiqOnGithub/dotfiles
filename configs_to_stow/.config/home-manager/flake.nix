@@ -20,6 +20,8 @@
       homeConfigurations.sadiq = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
+        extraSpecialArgs = { gitUserName = "sadiq_from_thinkpad"; };
+
         modules = [
           ./home.nix
         ];
