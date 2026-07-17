@@ -53,7 +53,7 @@ bindsym $mod+Return exec i3-sensible-terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
-bindsym alt+F4 kill
+bindsym Mod1+F4 kill
 
 # rofi launcher
 bindsym $mod+d exec --no-startup-id rofi -show drun       # application launcher
@@ -194,6 +194,9 @@ bindsym $mod+r mode "resize"
 bar {
         status_command i3blocks
 }
+
+# Toggle bar visibility with $mod+b
+bindsym $mod+b bar mode toggle
 
 
 # for natural scroll startup
