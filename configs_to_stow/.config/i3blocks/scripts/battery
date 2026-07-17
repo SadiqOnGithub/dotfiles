@@ -16,7 +16,11 @@ if [ -d "$bat_path" ]; then
         remaining=""
     fi
 
-    echo "$status ${capacity}% $remaining"
+    if [ "$status" = "Charging" ]; then
+        echo "↑${capacity}% $remaining"
+    else
+        echo "↓${capacity}% $remaining"
+    fi
 else
     echo "AC"
 fi

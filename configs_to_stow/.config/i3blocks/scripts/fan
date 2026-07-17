@@ -1,4 +1,4 @@
 #!/bin/bash
 
 fan_speed=$(cat /sys/class/hwmon/hwmon*/fan1_input 2>/dev/null | head -n1)
-echo "Fan ${fan_speed:-0} RPM"
+echo "FAN ${fan_speed:-0}"

@@ -57,9 +57,9 @@ command=~/.config/i3blocks/scripts/keyboard
 interval=once
 
 [uptime]
-command=uptime -p | sed 's/up //'
+command=awk '{h=int($1/3600); m=int(($1%3600)/60); printf "%dh %dm\n", h, m}' /proc/uptime
 interval=60
 
 [date]
-command=date '+%Y-%m-%d %H:%M:%S'
+command=date '+%a %d %b %H:%M'
 interval=1
