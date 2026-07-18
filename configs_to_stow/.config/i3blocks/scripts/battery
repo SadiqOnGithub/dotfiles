@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Battery status with color coding and desktop notification.
+# Color thresholds:
+#   Red:    < 10% — sends a critical notify-send notification (once per level)
+#   Orange: < 20%
+#   Yellow: < 40%
+#   Default: >= 40%
+# Click to cycle power profiles is handled separately in power_profile script.
+
 bat_path="/sys/class/power_supply/BAT0"
 notif_file="/tmp/i3blocks_battery_notified"
 
@@ -9,6 +17,7 @@ if [ -d "$bat_path" ]; then
     energy=$(cat "$bat_path/energy_now" 2>/dev/null)
     power=$(cat "$bat_path/power_now" 2>/dev/null)
 
+    # Calculate remaining time from energy/power (microwatt-hours / microwatts)
     if [ -n "$energy" ] && [ -n "$power" ] && [ "$power" -gt 0 ]; then
         hours=$((energy / power))
         minutes=$(( (energy % power) * 60 / power ))
@@ -17,6 +26,7 @@ if [ -d "$bat_path" ]; then
         remaining=""
     fi
 
+    # Set color based on capacity and send notification at critical level
     if [ "$capacity" -lt 10 ]; then
         color="#FF0000"
         if [ "$status" = "Discharging" ]; then
@@ -36,6 +46,7 @@ if [ -d "$bat_path" ]; then
         rm -f "$notif_file"
     fi
 
+    # Build display text based on charging status
     if [ "$status" = "Charging" ]; then
         text="↑${capacity}% $remaining"
     elif [ "$status" = "Not charging" ]; then
@@ -46,6 +57,7 @@ if [ -d "$bat_path" ]; then
         text="↓${capacity}% $remaining"
     fi
 
+    # Output with pango color markup if a color was set
     if [ -n "$color" ]; then
         echo "<span foreground=\"${color}\">${text}</span>"
     else

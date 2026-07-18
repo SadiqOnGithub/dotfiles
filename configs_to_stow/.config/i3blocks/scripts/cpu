@@ -1,5 +1,31 @@
 #!/bin/bash
+
+# CPU stats with color coding based on usage and temperature.
+# Color thresholds (worst of both wins):
+#   Green:  usage < 30% AND temp < 50°C
+#   Yellow: usage >= 30% OR temp >= 50°C
+#   Red:    usage >= 70% OR temp >= 75°C
+
+# Read sensor values
 temp=$(awk '{printf "%d", $1/1000}' /sys/class/thermal/thermal_zone0/temp)
 load=$(awk '{print $1}' /proc/loadavg)
 freq=$(awk '/cpu MHz/ {printf "%.1f", $4/1000; exit}' /proc/cpuinfo)
-top -bn1 | grep "Cpu(s)" | awk -v t="$temp" -v l="$load" -v f="$freq" '{printf "%.1f%% %d°C %s %sGHz\n", $2+$4, t, l, f}'
+usage=$(top -bn1 2>/dev/null | awk '/Cpu\(s\)/ {gsub(/%/,""); printf "%.1f", $2+$4}')
+
+# Strip decimal for integer comparison
+if [ -n "$usage" ]; then
+    int_usage=${usage%.*}
+else
+    int_usage=0
+fi
+
+# Determine color based on whichever threshold is worse
+if [ "$int_usage" -ge 70 ] || [ "$temp" -ge 75 ]; then
+    color="#FF4444"
+elif [ "$int_usage" -ge 30 ] || [ "$temp" -ge 50 ]; then
+    color="#FFD700"
+else
+    color="#44FF44"
+fi
+
+echo "<span foreground=\"${color}\">💻 ${usage}% ${temp}°C ${load} ${freq}GHz</span>"

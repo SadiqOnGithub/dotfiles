@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Power profile switcher with color coding.
+# Left-click cycles: performance -> balanced -> power-saver -> performance
+# Colors:
+#   Red:    performance (high power)
+#   Yellow: balanced (default)
+#   Green:  power-saver (low power)
+
 if [ "$BLOCK_BUTTON" = "1" ]; then
     current=$(powerprofilesctl get)
     case "$current" in
