@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ "$BLOCK_BUTTON" = "1" ]; then
+    current=$(powerprofilesctl get)
+    case "$current" in
+        performance) powerprofilesctl set balanced ;;
+        balanced)    powerprofilesctl set power-saver ;;
+        power-saver) powerprofilesctl set performance ;;
+    esac
+fi
+
+profile=$(powerprofilesctl get)
+case "$profile" in
+    performance) echo "<span foreground=\"#FF4444\">🚀 P</span>" ;;
+    balanced)    echo "<span foreground=\"#FFD700\">⚖️ B</span>" ;;
+    power-saver) echo "<span foreground=\"#44FF44\">🐢 S</span>" ;;
+esac

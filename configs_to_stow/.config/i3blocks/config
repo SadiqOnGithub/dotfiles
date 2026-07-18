@@ -84,6 +84,10 @@ interval=10
 # command=~/.config/i3blocks/scripts/keyboard
 # interval=once
 
+[power_profile]
+command=~/.config/i3blocks/scripts/power_profile
+interval=once
+
 [battery]
 command=~/.config/i3blocks/scripts/battery
 interval=30
