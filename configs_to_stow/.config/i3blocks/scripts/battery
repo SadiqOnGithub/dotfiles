@@ -1,6 +1,7 @@
 #!/bin/bash
 
 bat_path="/sys/class/power_supply/BAT0"
+notif_file="/tmp/i3blocks_battery_notified"
 
 if [ -d "$bat_path" ]; then
     status=$(cat "$bat_path/status")
@@ -16,14 +17,39 @@ if [ -d "$bat_path" ]; then
         remaining=""
     fi
 
-    if [ "$status" = "Charging" ]; then
-        echo "↑${capacity}% $remaining"
-    elif [ "$status" = "Not charging" ]; then
-        echo "AC ${capacity}%"
-    elif [ "$status" = "Full" ]; then
-        echo "AC ${capacity}%"
+    if [ "$capacity" -lt 10 ]; then
+        color="#FF0000"
+        if [ "$status" = "Discharging" ]; then
+            last_notified=$(cat "$notif_file" 2>/dev/null)
+            if [ "$last_notified" != "$capacity" ]; then
+                notify-send -u critical "Battery Critical" "Battery at ${capacity}% — plug in now!"
+                echo "$capacity" > "$notif_file"
+            fi
+        fi
+    elif [ "$capacity" -lt 20 ]; then
+        color="#FFA500"
+        rm -f "$notif_file"
+    elif [ "$capacity" -lt 40 ]; then
+        color="#FFFF00"
+        rm -f "$notif_file"
     else
-        echo "↓${capacity}% $remaining"
+        rm -f "$notif_file"
+    fi
+
+    if [ "$status" = "Charging" ]; then
+        text="↑${capacity}% $remaining"
+    elif [ "$status" = "Not charging" ]; then
+        text="AC ${capacity}%"
+    elif [ "$status" = "Full" ]; then
+        text="AC ${capacity}%"
+    else
+        text="↓${capacity}% $remaining"
+    fi
+
+    if [ -n "$color" ]; then
+        echo "<span foreground=\"${color}\">${text}</span>"
+    else
+        echo "$text"
     fi
 else
     echo "AC"
