@@ -1,18 +1,48 @@
 #!/bin/bash
+# i3blocks SSH status block
+#
+# Displays a color-flashing alert when SSH sessions are active.
+# Sends desktop notifications on new connections and disconnections.
+# Left-click opens the ssh-monitor terminal UI.
+#
+# State files:
+#   /tmp/ssh_block_state  — previous connection count (for detecting new connections)
+#   /tmp/ssh_block_blink  — blink phase (0, 1, or 2)
 
 STATE_FILE="/tmp/ssh_block_state"
 BLINK_FILE="/tmp/ssh_block_blink"
 
+# Count active SSH sessions (lines with a parenthesized IP address)
 count=$(who | grep -cP '\(\d+\.\d+\.\d+\.\d+\)' 2>/dev/null)
 
+# Read previous count; default to 0 if state file is missing or corrupt
 prev_count=0
-[ -f "$STATE_FILE" ] && prev_count=$(<"$STATE_FILE")
+if [ -f "$STATE_FILE" ]; then
+    read -r prev_count < "$STATE_FILE" 2>/dev/null
+    [[ "$prev_count" =~ ^[0-9]+$ ]] || prev_count=0
+fi
 echo "$count" > "$STATE_FILE"
 
+# Read blink phase; default to 0 if missing or corrupt
 blink=0
-[ -f "$BLINK_FILE" ] && blink=$(<"$BLINK_FILE")
+if [ -f "$BLINK_FILE" ]; then
+    read -r blink < "$BLINK_FILE" 2>/dev/null
+    [[ "$blink" =~ ^[0-2]$ ]] || blink=0
+fi
 
+# --- Click handler: open the interactive terminal monitor ---
+if [ "$BLOCK_BUTTON" = "1" ]; then
+    if [ "$count" -gt 0 ]; then
+        nohup gnome-terminal -- bash ~/.config/i3blocks/scripts/ssh-monitor >/dev/null 2>&1 &
+    else
+        notify-send -u low "SSH" "No active connections"
+    fi
+    exit 0
+fi
+
+# --- Active connections: show flashing alert ---
 if [ "$count" -gt 0 ]; then
+    # Send critical notification only when a new connection appears
     if [ "$count" -gt "$prev_count" ]; then
         ips=$(who | grep -oP '\(\K\d+\.\d+\.\d+\.\d+(?=\))')
         notify-send -u critical -i emblem-warning \
@@ -20,6 +50,8 @@ if [ "$count" -gt 0 ]; then
             "$count active SSH connection(s) from:\n$ips"
         blink=0
     fi
+
+    # Cycle through 3 blink states: red/white → white/black → black/red
     case "$blink" in
         0) echo "<span foreground='#ffffff' background='#ff0000'><b> ⚠ SSH $count </b></span>" ;;
         1) echo "<span foreground='#000000' background='#ffffff'><b> ⚠ SSH $count </b></span>" ;;
@@ -29,6 +61,7 @@ if [ "$count" -gt 0 ]; then
     exit 0
 fi
 
+# --- No connections: send "cleared" notification if there were some before ---
 if [ "$prev_count" -gt 0 ]; then
     notify-send -u normal -i emblem-ok-symbolic \
         "SSH Cleared" \

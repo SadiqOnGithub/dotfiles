@@ -1,0 +1,254 @@
+#!/bin/bash
+# Interactive SSH intruder monitor
+#
+# Launched by the ssh i3blocks block on left-click.
+# Displays a bordered, color-coded table of active SSH sessions
+# and provides actions to kick, block, inspect, or stop SSH.
+
+# --- Color definitions ---
+RED="\033[1;31m"
+GREEN="\033[1;32m"
+YELLOW="\033[1;33m"
+CYAN="\033[1;36m"
+WHITE="\033[1;37m"
+DIM="\033[2m"
+BOLD="\033[1m"
+RESET="\033[0m"
+
+# --- Helper: draw the banner ---
+draw_header() {
+    clear
+    echo -e "${RED}${BOLD}"
+    echo "╔══════════════════════════════════════════════════════════════╗"
+    echo "║                 ⚠  SSH INTRUDER MONITOR                    ║"
+    echo "╚══════════════════════════════════════════════════════════════╝"
+    echo -e "${RESET}"
+}
+
+# --- Helper: list SSH sessions (lines with a parenthesized IP) ---
+get_sessions() {
+    who | grep -P "\(\d+\.\d+\.\d+\.\d+\)"
+}
+
+# --- Helper: find the sshd PID for a given tty (e.g. pts/3) ---
+get_pid() {
+    local tty="$1"
+    pgrep -f "sshd:.*@$tty" 2>/dev/null | head -1
+}
+
+# --- Helper: compute uptime string from login date/time ---
+get_uptime() {
+    local login_time="$1 $2"
+    local now
+    now=$(date +%s)
+    local then
+    then=$(date -d "$login_time" +%s 2>/dev/null)
+    if [ -n "$then" ]; then
+        local diff=$(( now - then ))
+        local h=$(( diff / 3600 ))
+        local m=$(( (diff % 3600) / 60 ))
+        echo "${h}h ${m}m"
+    else
+        echo "?"
+    fi
+}
+
+# --- Helper: validate that input is a positive integer ---
+is_valid_num() {
+    [[ "$1" =~ ^[0-9]+$ ]] && [ "$1" -ge 1 ] 2>/dev/null
+}
+
+# --- Main loop ---
+while true; do
+    draw_header
+
+    sessions=$(get_sessions)
+    # Count non-empty lines (grep -c . counts lines matching any character)
+    session_count=0
+    if [ -n "$sessions" ]; then
+        session_count=$(echo "$sessions" | grep -c .)
+    fi
+
+    # No sessions: show message and wait for quit
+    if [ "$session_count" -eq 0 ]; then
+        echo -e "  ${GREEN}No active SSH connections.${RESET}"
+        echo ""
+        echo -e "  ${DIM}Press [q] to quit.${RESET}"
+        echo ""
+        read -p "  > " choice
+        case "$choice" in
+            q|Q) exit 0 ;;
+        esac
+        continue
+    fi
+
+    # --- Display session table ---
+    echo -e "  ${YELLOW}Active Sessions: ${WHITE}${session_count}${RESET}"
+    echo ""
+    printf "  ${BOLD}%-4s %-10s %-10s %-14s %-18s${RESET}\n" "#" "User" "Terminal" "Connected" "IP"
+    echo -e "  ${DIM}──── ────────── ────────── ────────────── ──────────────────${RESET}"
+
+    i=1
+    while IFS= read -r line; do
+        user=$(echo "$line" | awk '{print $1}')
+        tty=$(echo "$line" | awk '{print $2}')
+        login_date=$(echo "$line" | awk '{print $3}')
+        login_time=$(echo "$line" | awk '{print $4}')
+        ip=$(echo "$line" | grep -oP '\(\K[^\)]+')
+        uptime=$(get_uptime "$login_date" "$login_time")
+
+        printf "  ${RED}%-4s${RESET} %-10s %-10s %-14s ${RED}%-18s${RESET}\n" \
+            "[$i]" "$user" "$tty" "$uptime" "$ip"
+        i=$((i + 1))
+    done <<< "$sessions"
+
+    # --- Display action menu ---
+    echo ""
+    echo -e "  ${CYAN}Actions:${RESET}"
+    echo -e "  ${WHITE}[1]${RESET} Kick session      ${DIM}(kill sshd process)${RESET}"
+    echo -e "  ${WHITE}[2]${RESET} Block IP           ${DIM}(iptables DROP rule)${RESET}"
+    echo -e "  ${WHITE}[3]${RESET} View logs          ${DIM}(grep auth.log for IP)${RESET}"
+    echo -e "  ${WHITE}[4]${RESET} Tail activity      ${DIM}(live follow auth.log)${RESET}"
+    echo -e "  ${WHITE}[5]${RESET} Stop SSH server    ${DIM}(systemctl stop sshd)${RESET}"
+    echo -e "  ${WHITE}[r]${RESET} Refresh"
+    echo -e "  ${WHITE}[q]${RESET} Quit"
+    echo ""
+
+    read -p "  > " choice
+
+    case "$choice" in
+
+        # --- [1] Kick a session: kill its sshd process ---
+        1)
+            echo ""
+            read -p "  Enter session # to kick: " num
+            if ! is_valid_num "$num" || [ "$num" -gt "$session_count" ]; then
+                echo -e "  ${RED}Invalid selection.${RESET}"
+                sleep 1
+                continue
+            fi
+            tty=$(echo "$sessions" | sed -n "${num}p" | awk '{print $2}')
+            pid=$(get_pid "$tty")
+            if [ -n "$pid" ]; then
+                echo -e "  ${YELLOW}Sending SIGTERM to sshd PID ${pid} on ${tty}...${RESET}"
+                kill "$pid" 2>/dev/null
+                sleep 1
+                # Fall back to SIGKILL if still alive
+                if kill -0 "$pid" 2>/dev/null; then
+                    echo -e "  ${YELLOW}Process survived SIGTERM, sending SIGKILL...${RESET}"
+                    kill -9 "$pid" 2>/dev/null
+                fi
+                echo -e "  ${GREEN}Done.${RESET}"
+            else
+                echo -e "  ${RED}Could not find sshd process for ${tty}.${RESET}"
+            fi
+            sleep 1
+            ;;
+
+        # --- [2] Block an IP via iptables ---
+        2)
+            echo ""
+            read -p "  Enter session # to block: " num
+            if ! is_valid_num "$num" || [ "$num" -gt "$session_count" ]; then
+                echo -e "  ${RED}Invalid selection.${RESET}"
+                sleep 1
+                continue
+            fi
+            ip=$(echo "$sessions" | sed -n "${num}p" | grep -oP '\(\K[^\)]+')
+            if [ -z "$ip" ]; then
+                echo -e "  ${RED}Could not extract IP.${RESET}"
+                sleep 1
+                continue
+            fi
+            echo -e "  ${YELLOW}Blocking ${ip} via iptables...${RESET}"
+            # Use -n to skip DNS resolution (faster and more reliable)
+            if sudo -n iptables -A INPUT -s "$ip" -j DROP -n 2>/dev/null; then
+                echo -e "  ${GREEN}IP ${ip} blocked.${RESET}"
+            else
+                echo -e "  ${RED}Failed to block IP (sudo may be required).${RESET}"
+            fi
+            sleep 1
+            ;;
+
+        # --- [3] View recent auth.log entries for an IP ---
+        3)
+            echo ""
+            read -p "  Enter session # to inspect: " num
+            if ! is_valid_num "$num" || [ "$num" -gt "$session_count" ]; then
+                echo -e "  ${RED}Invalid selection.${RESET}"
+                sleep 1
+                continue
+            fi
+            ip=$(echo "$sessions" | sed -n "${num}p" | grep -oP '\(\K[^\)]+')
+            if [ -z "$ip" ]; then
+                echo -e "  ${RED}Could not extract IP.${RESET}"
+                sleep 1
+                continue
+            fi
+            echo -e "  ${DIM}Showing auth.log entries for ${ip}... (press q to return)${RESET}"
+            echo ""
+            sleep 0.5
+            sudo grep -i "$ip" /var/log/auth.log 2>/dev/null | tail -30 \
+                || echo -e "  ${DIM}No log entries found.${RESET}"
+            echo ""
+            read -p "  Press Enter to return..."
+            ;;
+
+        # --- [4] Live-tail auth.log for an IP ---
+        4)
+            echo ""
+            read -p "  Enter session # to tail: " num
+            if ! is_valid_num "$num" || [ "$num" -gt "$session_count" ]; then
+                echo -e "  ${RED}Invalid selection.${RESET}"
+                sleep 1
+                continue
+            fi
+            ip=$(echo "$sessions" | sed -n "${num}p" | grep -oP '\(\K[^\)]+')
+            if [ -z "$ip" ]; then
+                echo -e "  ${RED}Could not extract IP.${RESET}"
+                sleep 1
+                continue
+            fi
+            echo -e "  ${DIM}Tailing auth.log for ${ip}... (press Ctrl+C to stop)${RESET}"
+            echo ""
+            sleep 0.5
+            sudo tail -f /var/log/auth.log 2>/dev/null | grep --line-buffered "$ip"
+            ;;
+
+        # --- [5] Stop SSH server entirely (nuclear option) ---
+        5)
+            echo ""
+            echo -e "  ${RED}${BOLD}⚠ WARNING: This will stop the SSH server.${RESET}"
+            echo -e "  ${RED}${BOLD}  All connections will be dropped.${RESET}"
+            echo -e "  ${RED}${BOLD}  You will need physical access to restart it.${RESET}"
+            echo ""
+            read -p "  Are you sure? (yes/no): " confirm
+            if [ "$confirm" = "yes" ]; then
+                echo -e "  ${YELLOW}Stopping sshd...${RESET}"
+                if sudo -n systemctl stop sshd 2>/dev/null; then
+                    echo -e "  ${GREEN}SSH server stopped. All connections terminated.${RESET}"
+                else
+                    echo -e "  ${RED}Failed to stop sshd (sudo may be required).${RESET}"
+                fi
+            else
+                echo -e "  ${DIM}Cancelled.${RESET}"
+            fi
+            sleep 1
+            ;;
+
+        # --- [r] Refresh session list ---
+        r|R)
+            continue
+            ;;
+
+        # --- [q] Quit ---
+        q|Q)
+            exit 0
+            ;;
+
+        *)
+            echo -e "  ${RED}Invalid option.${RESET}"
+            sleep 0.5
+            ;;
+    esac
+done
