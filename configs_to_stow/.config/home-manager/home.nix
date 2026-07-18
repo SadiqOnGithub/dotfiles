@@ -39,6 +39,7 @@
     ./modules/yazi.nix
     ./modules/gtk.nix
     ./modules/dunst.nix
+    ./modules/i3.nix
   ];
 
   programs.home-manager.enable = true;
