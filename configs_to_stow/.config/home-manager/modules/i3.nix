@@ -75,7 +75,7 @@
         "${m}+Shift+d" = "exec --no-startup-id rofi -show run";
         "${m}+Shift+w" = "exec --no-startup-id rofi -show window";
         "${m}+Shift+s" = "exec --no-startup-id rofi -show ssh";
-        "${m}+c" = "exec --no-startup-id greenclip print | rofi -dmenu -p \"Clipboard\"";
+        "${m}+c" = "exec --no-startup-id greenclip print | rofi -dmenu -p \"Clipboard\" | xclip -selection clipboard";
         "Mod1+F2" = "exec --no-startup-id rofi -show run";
 
         # focus

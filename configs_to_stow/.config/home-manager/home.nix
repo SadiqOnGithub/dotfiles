@@ -15,6 +15,7 @@
 
     # clipboard manager for rofi
     haskellPackages.greenclip
+    xclip
 
     # status bar for i3
     i3blocks
