@@ -2,5 +2,5 @@
 
 context=$(kubectl config current-context 2>/dev/null)
 if [ -n "$context" ]; then
-    echo "☸ $context"
+    echo "<span foreground=\"#326CE5\">☸️ $context</span>"
 fi
