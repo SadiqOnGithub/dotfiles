@@ -14,14 +14,12 @@ notif_file="/tmp/i3blocks_battery_notified"
 if [ -d "$bat_path" ]; then
     status=$(cat "$bat_path/status")
     capacity=$(cat "$bat_path/capacity")
-    energy=$(cat "$bat_path/energy_now" 2>/dev/null)
-    power=$(cat "$bat_path/power_now" 2>/dev/null)
-
-    # Calculate remaining time from energy/power (microwatt-hours / microwatts)
-    if [ -n "$energy" ] && [ -n "$power" ] && [ "$power" -gt 0 ]; then
-        hours=$((energy / power))
-        minutes=$(( (energy % power) * 60 / power ))
-        remaining=$(printf "%02d:%02d" $hours $minutes)
+    # Get remaining time from acpi output
+    remaining=$(acpi -b 2>/dev/null | grep -oP '\d{2}:\d{2}:\d{2}' | head -1)
+    if [ -n "$remaining" ]; then
+        h=$(echo "$remaining" | cut -d: -f1)
+        m=$(echo "$remaining" | cut -d: -f2)
+        remaining="${h#0}:${m#0}"
     else
         remaining=""
     fi
