@@ -4,3 +4,7 @@ updates=$(apt list --upgradable 2>/dev/null | grep -c "upgradable")
 if [ "$updates" -gt 0 ]; then
     echo "⬆ $updates"
 fi
+
+if [ "$BLOCK_BUTTON" -eq 1 ]; then
+    x-terminal-emulator -e bash -c "sudo apt update && sudo apt upgrade -y; read -p 'Press enter to close...'"
+fi
