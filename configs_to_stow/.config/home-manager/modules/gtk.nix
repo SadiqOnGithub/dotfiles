@@ -13,7 +13,7 @@
     };
     font = {
       name = "Ubuntu";
-      size = 10;
+      size = 12;
     };
     gtk3.extraConfig = {
       gtk-application-prefer-dark-theme = 1;

@@ -21,7 +21,7 @@
 
       fonts = {
         names = [ "monospace" ];
-        size = 10.0;
+        size = 20.0;
       };
 
       startup = [
@@ -181,6 +181,10 @@
         {
           statusCommand = "i3blocks";
           position = "bottom";
+          fonts = {
+            names = [ "monospace" ];
+            size = 10.0;
+          };
         }
       ];
 
