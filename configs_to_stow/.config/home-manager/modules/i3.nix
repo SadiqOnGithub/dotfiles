@@ -21,7 +21,7 @@
 
       fonts = {
         names = [ "monospace" ];
-        size = 20.0;
+        size = 12.0;
       };
 
       startup = [
