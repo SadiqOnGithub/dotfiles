@@ -70,7 +70,7 @@ interval=300
 
 [ssh]
 command=~/.config/i3blocks/scripts/ssh
-interval=30
+interval=1
 
 [github]
 command=~/.config/i3blocks/scripts/github

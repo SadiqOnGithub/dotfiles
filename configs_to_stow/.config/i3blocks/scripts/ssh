@@ -1,6 +1,37 @@
 #!/bin/bash
 
-count=$(who | grep -c "(.*)" 2>/dev/null)
+STATE_FILE="/tmp/ssh_block_state"
+BLINK_FILE="/tmp/ssh_block_blink"
+
+count=$(who | grep -cP '\(\d+\.\d+\.\d+\.\d+\)' 2>/dev/null)
+
+prev_count=0
+[ -f "$STATE_FILE" ] && prev_count=$(<"$STATE_FILE")
+echo "$count" > "$STATE_FILE"
+
+blink=0
+[ -f "$BLINK_FILE" ] && blink=$(<"$BLINK_FILE")
+
 if [ "$count" -gt 0 ]; then
-    echo "SSH $count"
+    if [ "$count" -gt "$prev_count" ]; then
+        ips=$(who | grep -oP '\(\K\d+\.\d+\.\d+\.\d+(?=\))')
+        notify-send -u critical -i emblem-warning \
+            "⚠ INTRUDER ALERT ⚠" \
+            "$count active SSH connection(s) from:\n$ips"
+        blink=0
+    fi
+    case "$blink" in
+        0) echo "<span foreground='#ffffff' background='#ff0000'><b> ⚠ SSH $count </b></span>" ;;
+        1) echo "<span foreground='#000000' background='#ffffff'><b> ⚠ SSH $count </b></span>" ;;
+        2) echo "<span foreground='#ff0000' background='#000000'><b> ⚠ SSH $count </b></span>" ;;
+    esac
+    echo $(( (blink + 1) % 3 )) > "$BLINK_FILE"
+    exit 0
+fi
+
+if [ "$prev_count" -gt 0 ]; then
+    notify-send -u normal -i emblem-ok-symbolic \
+        "SSH Cleared" \
+        "All intruders have disconnected."
+    rm -f "$BLINK_FILE"
 fi
