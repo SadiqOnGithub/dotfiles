@@ -60,9 +60,9 @@ interval=10
 command=~/.config/i3blocks/scripts/k8s
 interval=10
 
-[updates]
-command=~/.config/i3blocks/scripts/updates
-interval=3600
+#[updates]
+#command=~/.config/i3blocks/scripts/updates
+#interval=3600
 
 [systemd]
 command=~/.config/i3blocks/scripts/systemd

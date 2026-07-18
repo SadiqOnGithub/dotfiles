@@ -2,5 +2,22 @@
 
 failed=$(systemctl --failed --no-legend --no-pager 2>/dev/null | wc -l)
 if [ "$failed" -gt 0 ]; then
-    echo "❌ $failed"
+    echo "<span foreground='#FF4444'>❌ $failed</span>"
+fi
+
+if [ "$BLOCK_BUTTON" -eq 1 ]; then
+    details=$(systemctl --failed --no-legend --no-pager 2>/dev/null)
+    full=$(systemctl --failed --no-pager 2>/dev/null)
+    if [ -n "$details" ]; then
+        x-terminal-emulator -e bash -c "
+echo '--- Failed Services ---'
+echo \"\$1\"
+echo ''
+read -p 'Press enter to analyze with opencode...'
+echo \"\$1\" | ~/.opencode/bin/opencode
+read -p 'Press enter to close...'
+" _ "$full"
+    else
+        x-terminal-emulator -e bash -c "echo 'No failed services found.'; read -p 'Press enter to close...'"
+    fi
 fi
