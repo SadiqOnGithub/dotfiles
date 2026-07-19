@@ -12,6 +12,17 @@
 STATE_FILE="/tmp/ssh_block_state"
 BLINK_FILE="/tmp/ssh_block_blink"
 
+# Play alarm sound (6 buzzes) for intrusion alerts — fully detached
+play_alarm() {
+    local sound="$HOME/.config/i3blocks/sounds/Alarm_Buzzer.ogg"
+    [ -f "$sound" ] || return
+    nohup bash -c "
+        for i in 1 2 3 4 5 6; do
+            paplay '$sound' 2>/dev/null
+        done
+    " >/dev/null 2>&1 &
+}
+
 # Count active SSH sessions (lines with a parenthesized IP address)
 count=$(who | grep -cP '\(\d+\.\d+\.\d+\.\d+\)' 2>/dev/null)
 
@@ -48,6 +59,7 @@ if [ "$count" -gt 0 ]; then
         notify-send -u critical -i emblem-warning \
             "⚠ INTRUDER ALERT ⚠" \
             "$count active SSH connection(s) from:\n$ips"
+        play_alarm &
         blink=0
     fi
 
