@@ -1,15 +1,13 @@
 { ... }:
 
 {
-  programs.bash = {
+  programs.zsh = {
     enable = true;
 
     # -- shell options --
-    shellOptions = [
-      "histappend"
-      "checkwinsize"
-      "globstar"
-    ];
+    enableCompletion = true;
+    autosuggestion.enable = false;
+    syntaxHighlighting.enable = false;
 
     # -- env vars and PATH exports --
     sessionVariables = {
@@ -20,7 +18,16 @@
       PNPM_HOME = "$HOME/.local/share/pnpm";
     };
 
-    initExtra = ''
+    initContent = ''
+      # ===========================
+      # Shell options
+      # ===========================
+      setopt histappend
+      setopt sharehistory
+      setopt histignoreDups
+      setopt histignorespace
+      setopt incappendhistory
+
       # ===========================
       # PATH exports
       # ===========================
@@ -55,7 +62,7 @@
       . "$HOME/.cargo/env"
 
       # kubectl completion
-      source <(kubectl completion bash)
+      source <(kubectl completion zsh)
 
       # dircolors (color support for ls, grep, etc.)
       if [ -x /usr/bin/dircolors ]; then
@@ -65,20 +72,11 @@
       # lesspipe (better file previews in less)
       [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-      # bash-completion
-      if ! shopt -oq posix; then
-        if [ -f /usr/share/bash-completion/bash_completion ]; then
-          . /usr/share/bash-completion/bash_completion
-        elif [ -f /etc/bash_completion ]; then
-          . /etc/bash_completion
-        fi
-      fi
-
       # ===========================
       # Completions
       # ===========================
-      complete -C /usr/bin/terraform terraform
-      complete -C '/usr/local/bin/aws_completer' aws
+      compdef terraform
+      compdef aws
 
       # ===========================
       # Source kubectl aliases
@@ -90,7 +88,7 @@
       # ===========================
 
       # Yellow user@host, Cyan folder
-      PS1='\[\e[1;33m\]\u@\h \[\e[1;36m\]\W\[\e[0m\] \$ ';
+      PROMPT='%F{yellow}%n@%m %F{cyan}%~%f %# '
     '';
   };
 }

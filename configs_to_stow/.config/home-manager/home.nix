@@ -36,7 +36,10 @@
   imports = [
     ./modules/git.nix
     ./modules/tmux.nix
+    ./modules/aliases.nix
+    ./modules/functions.nix
     ./modules/bash.nix
+    ./modules/zsh.nix
     ./modules/yazi.nix
     ./modules/gtk.nix
     ./modules/dunst.nix
