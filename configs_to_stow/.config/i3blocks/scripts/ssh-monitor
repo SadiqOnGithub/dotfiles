@@ -25,9 +25,9 @@ draw_header() {
     echo -e "${RESET}"
 }
 
-# --- Helper: list SSH sessions (lines with a parenthesized IP) ---
+# --- Helper: list SSH sessions (parenthesized IPv4 or IPv6, excludes X11 :0) ---
 get_sessions() {
-    who | grep -P "\(\d+\.\d+\.\d+\.\d+\)"
+    who | grep -P "\([0-9a-fA-F][0-9a-fA-F:.]+\)"
 }
 
 # --- Helper: find the sshd PID for a given tty (e.g. pts/3) ---
