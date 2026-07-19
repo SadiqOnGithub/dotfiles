@@ -164,6 +164,11 @@
         # screenshot
         "Print" = "exec --no-startup-id flameshot gui";
 
+        # scratchpad (hidden drawer for temporary windows)
+        # Mod+- shows the next hidden window, Mod+Shift+- hides the focused window
+        "${m}+minus" = "scratchpad show";
+        "${m}+Shift+minus" = "move scratchpad";
+
         # volume
         "XF86AudioRaiseVolume" = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && dunstify -h int:value:\"$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\\d+%' | head -1 | tr -d '%')\" -h string:x-dunst-stack-tag:volumenotif \"Volume\"";
         "XF86AudioLowerVolume" = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && dunstify -h int:value:\"$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\\d+%' | head -1 | tr -d '%')\" -h string:x-dunst-stack-tag:volumenotif \"Volume\"";
