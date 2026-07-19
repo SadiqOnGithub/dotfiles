@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   programs.zsh = {
@@ -64,6 +64,9 @@
       # kubectl completion
       source <(kubectl completion zsh)
 
+      # docker completion
+      source <(docker completion zsh)
+
       # dircolors (color support for ls, grep, etc.)
       if [ -x /usr/bin/dircolors ]; then
         test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -75,6 +78,8 @@
       # ===========================
       # Completions
       # ===========================
+      fpath+=(${pkgs.systemd}/share/zsh/site-functions)
+      compinit
       compdef terraform
       compdef aws
 
