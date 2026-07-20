@@ -6,8 +6,8 @@
 
     # -- shell options --
     enableCompletion = true;
-    autosuggestion.enable = false;
-    syntaxHighlighting.enable = false;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
 
     # -- env vars and PATH exports --
     sessionVariables = {
@@ -27,6 +27,9 @@
       setopt histignoreDups
       setopt histignorespace
       setopt incappendhistory
+      setopt AUTO_PUSHD
+      setopt AUTO_CD
+      setopt CORRECT
 
       # ===========================
       # PATH exports
@@ -67,6 +70,13 @@
       # docker completion
       source <(docker completion zsh)
 
+      # fzf-tab
+      source ${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh
+
+      # zoxide (z function replaces the z alias)
+      unalias z 2>/dev/null
+      eval "$(${pkgs.zoxide}/bin/zoxide init zsh --cmd z)"
+
       # dircolors (color support for ls, grep, etc.)
       if [ -x /usr/bin/dircolors ]; then
         test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -79,6 +89,7 @@
       # Completions
       # ===========================
       fpath+=(${pkgs.systemd}/share/zsh/site-functions)
+      zstyle ':completion:*' use-cache on
       compinit
       compdef terraform
       compdef aws
@@ -89,11 +100,14 @@
       source ~/.config/kubectl-aliases/.kubectl_aliases
 
       # ===========================
-      # Prompt
+      # Prompt — Powerlevel10k
       # ===========================
-
-      # Yellow user@host, Cyan folder
-      PROMPT='%F{yellow}%n@%m %F{cyan}%~%f %# '
+      typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+      source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+      source ~/.p10k.zsh
     '';
   };
+
+  # p10k config — managed by home-manager
+  home.file.".p10k.zsh".source = ./p10k.zsh;
 }
