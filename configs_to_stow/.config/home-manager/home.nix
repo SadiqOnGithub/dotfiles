@@ -14,6 +14,7 @@
     eza
     bat
     zoxide
+    fzf
 
     # rofi launcher
     rofi

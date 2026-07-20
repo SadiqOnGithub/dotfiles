@@ -4,12 +4,14 @@
   programs.zsh = {
     enable = true;
 
-    # -- shell options --
-    enableCompletion = true;
+    # Home-manager built-in modules.
+    # NOTE: enableCompletion is disabled because we call compinit manually in initContent.
+    # This is required so that compinit runs AFTER all plugins and fpath additions.
+    enableCompletion = false;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-    # -- env vars and PATH exports --
+    # Environment variables available to all zsh sessions.
     sessionVariables = {
       NVM_DIR = "$HOME/.nvm";
       ANDROID_HOME = "$HOME/Android/Sdk";
@@ -18,22 +20,20 @@
       PNPM_HOME = "$HOME/.local/share/pnpm";
     };
 
+    # Shell initialization script.
+    # Order matters here — plugins must load before compinit, and compinit before p10k.
     initContent = ''
-      # ===========================
-      # Shell options
-      # ===========================
-      setopt histappend
-      setopt sharehistory
-      setopt histignoreDups
-      setopt histignorespace
-      setopt incappendhistory
-      setopt AUTO_PUSHD
-      setopt AUTO_CD
-      setopt CORRECT
+      # -- Shell options --
+      setopt histappend          # append to history file instead of overwriting
+      setopt sharehistory        # share history across sessions
+      setopt histignoreDups      # ignore consecutive duplicate commands
+      setopt histignorespace     # don't save commands starting with a space
+      setopt incappendhistory    # write to history file immediately
+      setopt AUTO_PUSHD          # make cd push to directory stack
+      setopt AUTO_CD             # type directory name to cd into it
+      setopt CORRECT             # suggest corrections for misspelled commands
 
-      # ===========================
-      # PATH exports
-      # ===========================
+      # -- PATH exports --
       export PATH="$HOME/.local/bin:$PATH"
       export PATH="$PATH:$ANDROID_HOME/emulator"
       export PATH="$PATH:$ANDROID_HOME/platform-tools"
@@ -47,22 +47,20 @@
         *) export PATH="$PNPM_HOME:$PATH" ;;
       esac
 
-      # ===========================
-      # Source shared aliases & functions
-      # ===========================
+      # -- Shared aliases & functions --
       source ~/.config/shell/aliases.sh
       source ~/.config/shell/functions.sh
 
-      # ===========================
-      # Tool initialization
-      # ===========================
+      # -- Tool initialization --
 
-      # NVM
+      # NVM (node version manager)
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
       [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-      # Cargo
+      # Cargo (rust)
       . "$HOME/.cargo/env"
+
+      # -- Plugin loading (must be before compinit) --
 
       # kubectl completion
       source <(kubectl completion zsh)
@@ -70,42 +68,34 @@
       # docker completion
       source <(docker completion zsh)
 
-      # fzf-tab
+      # fzf-tab — must load before compinit to hook into the completion system
       source ${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh
 
-      # zoxide (z function replaces the z alias)
+      # zoxide — smarter cd (aliased to z)
       unalias z 2>/dev/null
       eval "$(${pkgs.zoxide}/bin/zoxide init zsh --cmd z)"
 
-      # dircolors (color support for ls, grep, etc.)
+      # dircolors — color support for ls, grep, etc.
       if [ -x /usr/bin/dircolors ]; then
         test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
       fi
 
-      # lesspipe (better file previews in less)
+      # lesspipe — better file previews in less
       [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-      # ===========================
-      # Completions
-      # ===========================
+      # -- Completions --
+      # compinit must run AFTER plugins (fzf-tab, nvm, etc.) and fpath additions.
       fpath+=(${pkgs.systemd}/share/zsh/site-functions)
       zstyle ':completion:*' use-cache on
       compinit
-      compdef terraform
-      compdef aws
 
-      # ===========================
-      # Source kubectl aliases
-      # ===========================
+      # -- Additional completions (must be after compinit) --
       source ~/.config/kubectl-aliases/.kubectl_aliases
 
-      # ===========================
-      # Prompt — Powerlevel10k
-      # ===========================
+      # -- Prompt (must be last — p10k overrides completion functions) --
       typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
       source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
       source ~/.p10k.zsh
     '';
   };
-
 }
