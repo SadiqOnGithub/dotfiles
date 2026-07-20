@@ -6,6 +6,8 @@
     # Reload
     # ===========================
     alias bs="source ~/.bashrc"
+    alias zs="source ~/.zshrc"
+    alias hms="home-manager switch"
 
     # ===========================
     # Tools

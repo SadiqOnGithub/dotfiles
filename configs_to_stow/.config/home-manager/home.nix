@@ -41,6 +41,7 @@
     ./modules/bash.nix
     ./modules/zsh.nix
     ./modules/yazi.nix
+    ./modules/vim.nix
     ./modules/gtk.nix
     ./modules/dunst.nix
     ./modules/i3.nix
