@@ -8,6 +8,7 @@
     alias bs="source ~/.bashrc"
     alias zs="source ~/.zshrc"
     alias hms="home-manager switch"
+    alias hmsf="home-manager switch --flake ."
 
     # ===========================
     # Tools
@@ -24,6 +25,8 @@
     alias gcp="git checkout HEAD~1"
     alias t="tmux"
     alias v='NVIM_APPNAME="nvim" nvim'
+    alias oc="opencode"
+    alias ocr="opencode run"
 
     # ===========================
     # System
@@ -112,7 +115,6 @@
     alias docu="cd ~/Documents"
     alias gls="cd ~/Documents/goals"
     alias web="cd ~/Documents/web"
-    alias oc="cd ~/Documents/web/okhla-consultancy"
     alias vs="cd ~/Documents/web/okhla-consultancy/vs-ecom"
     alias oss="cd ~/Documents/web/oss"
     alias prac="cd ~/Documents/web/prac"

@@ -31,7 +31,7 @@
           notification = false;
         }
         {
-          command = "xss-lock --transfer-sleep-lock -- i3lock --nofork";
+          command = "xss-lock --transfer-sleep-lock -- i3lock --nofork -c 000000";
           always = false;
           notification = false;
         }
@@ -159,7 +159,7 @@
         "${m}+m" = "exec dunstctl set-paused toggle";
 
         # screen lock
-        "${m}+ctrl+l" = "exec LC_ALL=en_US.UTF-8 i3lock -c 1a1b26";
+        "${m}+ctrl+l" = "exec LC_ALL=en_US.UTF-8 i3lock -c 000000";
 
         # screenshot
         "Print" = "exec --no-startup-id flameshot gui";

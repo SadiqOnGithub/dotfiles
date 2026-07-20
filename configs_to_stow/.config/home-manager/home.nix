@@ -5,6 +5,10 @@
   home.homeDirectory = "/home/sadiq";
   home.stateVersion = "25.05";
 
+  home.sessionVariables = {
+    LC_ALL = "en_US.UTF-8";
+  };
+
   home.packages = with pkgs; [
     # cli tools
     eza
