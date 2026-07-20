@@ -108,6 +108,4 @@
     '';
   };
 
-  # p10k config — managed by home-manager
-  home.file.".p10k.zsh".source = ./p10k.zsh;
 }
