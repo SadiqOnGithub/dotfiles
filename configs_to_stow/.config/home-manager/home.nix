@@ -13,6 +13,7 @@
     # cli tools
     eza
     bat
+    zoxide
 
     # rofi launcher
     rofi
