@@ -67,6 +67,7 @@
       in {
         # applications
         "${m}+Return" = "exec i3-sensible-terminal";
+        "Control+Mod1+t" = "exec gnome-terminal";
         "${m}+Shift+b" = "exec --no-startup-id microsoft-edge-stable";
         "${m}+Shift+q" = "kill";
         "Mod1+F4" = "kill";
