@@ -32,6 +32,9 @@
     # screenshot tool for i3
     flameshot
 
+    # ssh agent manager
+    keychain
+
     # notification utility
     libnotify
 

@@ -47,6 +47,9 @@
         *) export PATH="$PNPM_HOME:$PATH" ;;
       esac
 
+      # -- SSH Agent --
+      eval "$(keychain --eval --agents ssh --inherit any-once ~/.ssh/id_rsa ~/.ssh/github ~/.ssh/ansible)"
+
       # -- Shared aliases & functions --
       source ~/.config/shell/aliases.sh
       source ~/.config/shell/functions.sh

@@ -38,6 +38,11 @@
       esac
 
       # ===========================
+      # SSH Agent
+      # ===========================
+      eval "$(keychain --eval --agents ssh --inherit any-once ~/.ssh/id_rsa ~/.ssh/github ~/.ssh/ansible)"
+
+      # ===========================
       # Source shared aliases & functions
       # ===========================
       source ~/.config/shell/aliases.sh
