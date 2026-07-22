@@ -26,5 +26,15 @@
           ./home.nix
         ];
       };
+
+      homeConfigurations.sadiq-server = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+
+        extraSpecialArgs = { gitUserName = "sadiq_from_elitebook"; };
+
+        modules = [
+          ./home.server.nix
+        ];
+      };
     };
 }
