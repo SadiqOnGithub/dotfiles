@@ -4,14 +4,12 @@
   programs.bash = {
     enable = true;
 
-    # -- shell options --
     shellOptions = [
       "histappend"
       "checkwinsize"
       "globstar"
     ];
 
-    # -- env vars and PATH exports --
     sessionVariables = {
       NVM_DIR = "$HOME/.nvm";
       ANDROID_HOME = "$HOME/Android/Sdk";
@@ -24,6 +22,7 @@
       # ===========================
       # PATH exports
       # ===========================
+      export PATH="$HOME/.nix-profile/bin:$PATH"
       export PATH="$HOME/.local/bin:$PATH"
       export PATH="$PATH:$ANDROID_HOME/emulator"
       export PATH="$PATH:$ANDROID_HOME/platform-tools"
@@ -40,35 +39,57 @@
       # ===========================
       # SSH Agent
       # ===========================
-      eval "$(keychain --eval --agents ssh --inherit any-once ~/.ssh/id_rsa ~/.ssh/github ~/.ssh/ansible)"
+      ssh_keys=()
+      for key in "$HOME/.ssh/id_rsa" "$HOME/.ssh/github" "$HOME/.ssh/ansible"; do
+        if [ -f "$key" ]; then
+          ssh_keys+=("$key")
+        fi
+      done
+      if [ ''${#ssh_keys[@]} -gt 0 ]; then
+        eval "$(keychain --eval --agents ssh --inherit any-once "''${ssh_keys[@]}")"
+      fi
 
       # ===========================
       # Source shared aliases & functions
       # ===========================
-      source ~/.config/shell/aliases.sh
-      source ~/.config/shell/functions.sh
+      source "$HOME/.config/shell/aliases.sh"
+      source "$HOME/.config/shell/functions.sh"
 
       # ===========================
       # Tool initialization
       # ===========================
 
       # NVM
-      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+      if [ -s "$NVM_DIR/nvm.sh" ]; then
+        \. "$NVM_DIR/nvm.sh"
+      fi
+      if [ -s "$NVM_DIR/bash_completion" ]; then
+        \. "$NVM_DIR/bash_completion"
+      fi
 
       # Cargo
-      . "$HOME/.cargo/env"
+      if [ -f "$HOME/.cargo/env" ]; then
+        . "$HOME/.cargo/env"
+      fi
 
       # kubectl completion
-      source <(kubectl completion bash)
+      if command -v kubectl &>/dev/null; then
+        source <(kubectl completion bash)
+      fi
 
       # dircolors (color support for ls, grep, etc.)
       if [ -x /usr/bin/dircolors ]; then
-        test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+        if [ -r "$HOME/.dircolors" ]; then
+          eval "$(dircolors -b "$HOME/.dircolors")"
+        else
+          eval "$(dircolors -b)"
+        fi
       fi
 
       # lesspipe (better file previews in less)
-      [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+      if [ -x /usr/bin/lesspipe ]; then
+        eval "$(SHELL=/bin/sh lesspipe)"
+      fi
 
       # bash-completion
       if ! shopt -oq posix; then
@@ -88,7 +109,9 @@
       # ===========================
       # Source kubectl aliases
       # ===========================
-      source ~/.config/kubectl-aliases/.kubectl_aliases
+      if [ -f "$HOME/.config/kubectl-aliases/.kubectl_aliases" ]; then
+        source "$HOME/.config/kubectl-aliases/.kubectl_aliases"
+      fi
 
       # ===========================
       # Prompt

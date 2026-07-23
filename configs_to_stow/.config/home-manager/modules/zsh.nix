@@ -48,28 +48,46 @@
       esac
 
       # -- SSH Agent --
-      eval "$(keychain --eval --agents ssh --inherit any-once ~/.ssh/id_rsa ~/.ssh/github ~/.ssh/ansible)"
+      ssh_keys=()
+      for key in "$HOME/.ssh/id_rsa" "$HOME/.ssh/github" "$HOME/.ssh/ansible"; do
+        if [ -f "$key" ]; then
+          ssh_keys+=("$key")
+        fi
+      done
+      if [ ''${#ssh_keys[@]} -gt 0 ]; then
+        eval "$(keychain --eval --agents ssh --inherit any-once "''${ssh_keys[@]}")"
+      fi
 
       # -- Shared aliases & functions --
-      source ~/.config/shell/aliases.sh
-      source ~/.config/shell/functions.sh
+      source "$HOME/.config/shell/aliases.sh"
+      source "$HOME/.config/shell/functions.sh"
 
       # -- Tool initialization --
 
       # NVM (node version manager)
-      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+      if [ -s "$NVM_DIR/nvm.sh" ]; then
+        \. "$NVM_DIR/nvm.sh"
+      fi
+      if [ -s "$NVM_DIR/bash_completion" ]; then
+        \. "$NVM_DIR/bash_completion"
+      fi
 
       # Cargo (rust)
-      . "$HOME/.cargo/env"
+      if [ -f "$HOME/.cargo/env" ]; then
+        . "$HOME/.cargo/env"
+      fi
 
       # -- Plugin loading (must be before compinit) --
 
       # kubectl completion
-      source <(kubectl completion zsh)
+      if command -v kubectl &>/dev/null; then
+        source <(kubectl completion zsh)
+      fi
 
       # docker completion
-      source <(docker completion zsh)
+      if command -v docker &>/dev/null; then
+        source <(docker completion zsh)
+      fi
 
       # fzf-tab — must load before compinit to hook into the completion system
       source ${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh
@@ -80,25 +98,36 @@
 
       # dircolors — color support for ls, grep, etc.
       if [ -x /usr/bin/dircolors ]; then
-        test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+        if [ -r "$HOME/.dircolors" ]; then
+          eval "$(dircolors -b "$HOME/.dircolors")"
+        else
+          eval "$(dircolors -b)"
+        fi
       fi
 
       # lesspipe — better file previews in less
-      [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+      if [ -x /usr/bin/lesspipe ]; then
+        eval "$(SHELL=/bin/sh lesspipe)"
+      fi
 
       # -- Completions --
       # compinit must run AFTER plugins (fzf-tab, nvm, etc.) and fpath additions.
       fpath+=(${pkgs.systemd}/share/zsh/site-functions)
       zstyle ':completion:*' use-cache on
+      autoload -Uz compinit
       compinit
 
       # -- Additional completions (must be after compinit) --
-      source ~/.config/kubectl-aliases/.kubectl_aliases
+      if [ -f "$HOME/.config/kubectl-aliases/.kubectl_aliases" ]; then
+        source "$HOME/.config/kubectl-aliases/.kubectl_aliases"
+      fi
 
       # -- Prompt (must be last — p10k overrides completion functions) --
       typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
       source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
-      source ~/.p10k.zsh
+      if [ -f "$HOME/.p10k.zsh" ]; then
+        source "$HOME/.p10k.zsh"
+      fi
     '';
   };
 }
