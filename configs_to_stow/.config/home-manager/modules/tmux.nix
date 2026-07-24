@@ -32,6 +32,9 @@
 
       # Reload config
       bind r source-file ~/.config/tmux/tmux.conf \; display "Config reloaded!"
+
+      # New session
+      bind N command-prompt -p "session name:" "new-session -s '%%'"
     '';
   };
 }
