@@ -9,6 +9,10 @@
     LC_ALL = "en_US.UTF-8";
   };
 
+  home.sessionPath = [
+    "${config.home.homeDirectory}/.nix-profile/bin"
+  ];
+
   home.packages = with pkgs; [
     # cli tools
     eza
@@ -40,6 +44,12 @@
 
     # gtk settings daemon for i3 (applies theme to gtk apps)
     xsettingsd
+
+    # vpn
+    tailscale
+
+    # power management
+    acpi
   ];
 
   imports = [
