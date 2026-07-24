@@ -9,12 +9,22 @@
     LC_ALL = "en_US.UTF-8";
   };
 
+  home.sessionPath = [
+    "${config.home.homeDirectory}/.nix-profile/bin"
+  ];
+
   home.packages = with pkgs; [
     eza
     bat
     zoxide
     fzf
     keychain
+
+    # vpn
+    tailscale
+
+    # power management
+    acpi
   ];
 
   imports = [
