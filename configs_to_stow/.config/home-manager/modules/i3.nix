@@ -89,6 +89,8 @@
         "${m}+Down" = "focus down";
         "${m}+Up" = "focus up";
         "${m}+Right" = "focus right";
+        "${m}+Tab" = "focus next";
+        "${m}+Shift+Tab" = "focus prev";
 
         # move
         "${m}+Shift+j" = "move left";
