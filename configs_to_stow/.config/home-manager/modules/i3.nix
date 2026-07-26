@@ -1,6 +1,8 @@
 { pkgs, ... }:
 
 {
+  xdg.configFile."i3/cycle-windows.py".source = ./cycle-windows.py;
+
   xdg.dataFile."xsessions/i3.desktop".text = ''
     [Desktop Entry]
     Name=i3
@@ -89,8 +91,8 @@
         "${m}+Down" = "focus down";
         "${m}+Up" = "focus up";
         "${m}+Right" = "focus right";
-        "${m}+Tab" = "fullscreen disable ; focus next ; fullscreen enable";
-        "${m}+Shift+Tab" = "fullscreen disable ; focus prev ; fullscreen enable";
+        "${m}+Tab" = "exec --no-startup-id python3 ~/.config/i3/cycle-windows.py next";
+        "${m}+Shift+Tab" = "exec --no-startup-id python3 ~/.config/i3/cycle-windows.py prev";
 
         # move
         "${m}+Shift+j" = "move left";
