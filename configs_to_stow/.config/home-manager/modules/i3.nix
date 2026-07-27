@@ -150,7 +150,7 @@
         # reload / restart / exit
         "${m}+Shift+c" = "reload";
         "${m}+Shift+r" = "restart";
-        "${m}+Shift+e" = "exit";
+        "${m}+Mod1+e" = "exit";
 
         # resize mode
         "${m}+r" = "mode resize";
