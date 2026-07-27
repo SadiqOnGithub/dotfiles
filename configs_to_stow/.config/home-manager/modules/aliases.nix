@@ -115,7 +115,7 @@
     alias docu="cd ~/Documents"
     alias gls="cd ~/Documents/goals"
     alias web="cd ~/Documents/web"
-    alias vs="cd ~/Documents/web/okhla-consultancy/vs-ecom"
+    alias vs="cd ~/Documents/web/okhla-consultancy/vs"
     alias oss="cd ~/Documents/web/oss"
     alias prac="cd ~/Documents/web/prac"
     alias rus="cd ~/Documents/web/prac/rust"
