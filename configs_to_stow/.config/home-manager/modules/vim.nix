@@ -152,10 +152,14 @@
       let g:asyncomplete_auto_popup = 1
       let g:asyncomplete_auto_completeopt = 1
       set completeopt=menuone,preview,noinsert
+
+      " Yanks go to system clipboard
+      set clipboard=unnamedplus
     '';
   };
 
   home.packages = with pkgs; [
+    xclip                      # Clipboard support for Vim
     nil                        # Nix
     pyright                    # Python
     gopls                      # Go
