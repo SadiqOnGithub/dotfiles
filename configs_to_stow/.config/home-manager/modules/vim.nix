@@ -13,6 +13,12 @@ let
 in
 
 {
+  # ════════════════════════════════════════════════════════════════
+  # NOTE TO SELF: When editing vim config, keep keybindings aligned
+  # with LazyVim/Neovim conventions. Reference:
+  #   https://www.lazyvim.org/keymaps
+  # ════════════════════════════════════════════════════════════════
+
   # Vim with LSP support for multiple languages
   # ===================================================
   # LSP servers included:
@@ -177,6 +183,23 @@ in
       " Toggle window maximize/restore
       nnoremap <silent> <leader>z :MaximizerToggle<CR>
       vnoremap <silent> <leader>z :MaximizerToggle<CR>gv
+
+      " LSP navigation (LazyVim-style)
+      nnoremap gd :LspDefinition<CR>
+      nnoremap gr :LspReferences<CR>
+      nnoremap K :LspHover<CR>
+
+      " Quickfix toggle (LazyVim: <leader>xq)
+      function! QuickfixToggle()
+        if &buftype == 'quickfix'
+          cclose
+        else
+          copen
+        endif
+      endfunction
+      nnoremap <silent> <leader>xq :call QuickfixToggle()<CR>
+      nnoremap ]q :cnext<CR>
+      nnoremap [q :cprev<CR>
 
       " Netrw file browser settings
       let g:netrw_banner = 0
