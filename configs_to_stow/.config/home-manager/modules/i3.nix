@@ -68,8 +68,9 @@
         m = "Mod4";
       in {
         # applications
-        "${m}+Return" = "exec i3-sensible-terminal";
+        "${m}+Return" = "exec gnome-terminal";
         "Control+Mod1+t" = "exec gnome-terminal";
+        "Control+Mod1+g" = "exec ghostty";
         "${m}+Shift+b" = "exec --no-startup-id microsoft-edge-stable";
         "${m}+Shift+q" = "kill";
         "Mod1+F4" = "kill";
