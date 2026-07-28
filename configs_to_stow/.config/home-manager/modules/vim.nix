@@ -1,14 +1,17 @@
 { pkgs, ... }:
 
 {
-  # Vim with Nix syntax highlighting and LSP support
+  # Vim with LSP support for multiple languages
   # ===================================================
-  # This module enables vim with:
-  #   - syntax on: general syntax highlighting
-  #   - vim-nix: syntax highlighting, indentation, and folding for Nix files
-  #   - nil LSP server: diagnostics, completions, and formatting for Nix
-  #
-  # For other languages, add more vimPlugins and adjust the LSP registrations.
+  # LSP servers included:
+  #   - nil:              Nix
+  #   - pyright:          Python
+  #   - gopls:            Go
+  #   - rust-analyzer:    Rust
+  #   - typescript-language-server: TypeScript/JavaScript
+  #   - bash-language-server: Bash/Shell
+  #   - clangd:           C/C++
+  #   - lua-language-server: Lua
 
   programs.vim = {
     enable = true;
@@ -25,46 +28,125 @@
       asyncomplete-lsp-vim
     ];
 
-    # Vim configuration
     extraConfig = ''
       " Enable filetype detection, syntax highlighting, and indentation
       filetype plugin indent on
       syntax on
 
-      " Nix-specific settings
-      " Shiftwidth: indentation level (2 spaces)
-      " tabstop:   a tab character displayed as 2 spaces
-      " expandtab: use spaces instead of tab characters
-      au BufRead,BufNewFile *.nix setlocal shiftwidth=2 tabstop=2 expandtab
+      " General settings
+      set tabstop=4 shiftwidth=4 expandtab
 
-      " LSP configuration
-      " nil is a lightweight LSP server for Nix with no dependencies on Nixpkgs
-      " internals. It provides:
-      "   - Diagnostics (syntax errors, warnings)
-      "   - Completions
-      "   - Find references / Go to definition
-      "   - Automatic formatting on save (BufWritePre)
+      " Filetype-specific indentation
+      au BufRead,BufNewFile *.nix setlocal shiftwidth=2 tabstop=2 expandtab
+      au BufRead,BufNewFile *.go setlocal noexpandtab tabstop=4 shiftwidth=4
+      au BufRead,BufNewFile *.rs setlocal shiftwidth=4 tabstop=4 expandtab
+      au BufRead,BufNewFile *.lua setlocal shiftwidth=2 tabstop=2 expandtab
+      au BufRead,BufNewFile *.ts,*.tsx,*.js,*.jsx setlocal shiftwidth=2 tabstop=2 expandtab
+      au BufRead,BufNewFile *.sh,*.bash setlocal shiftwidth=2 tabstop=2 expandtab
+      au BufRead,BufNewFile *.c,*.cpp,*.h setlocal shiftwidth=4 tabstop=4 expandtab
+
+      " LSP configuration helper
+      function! RegisterLSP(name, cmd, whitelist)
+        if executable(a:cmd[0])
+          au User lsp_setup call lsp#register_server({
+                \ 'name': a:name,
+                \ 'cmd': {server_info -> a:cmd},
+                \ 'whitelist': a:whitelist,
+                \ 'message': 'lsp-notify',
+                \ })
+        endif
+      endfunction
+
+      " --- Nix ---
       if executable('nil')
         au User lsp_setup call lsp#register_server({
               \ 'name': 'nil',
               \ 'cmd': {server_info -> ['nil', '--stdio']},
               \ 'whitelist': ['nix'],
               \ 'message': 'lsp-notify',
-              \ 'stderr': '/dev/null',
               \ })
-        " Format Nix files automatically on save
         autocmd BufWritePre *.nix LspDocumentFormatSync
       endif
 
-      " Netrw file browser settings
-      let g:netrw_banner = 0          " Remove the banner
-      let g:netrw_liststyle = 3       " Tree view
-      let g:netrw_browse_split = 4    " Open files in previous window
-      let g:netrw_altv = 1            " Open splits to the right
-      let g:netrw_winsize = 25        " Width in percent
+      " --- Python ---
+      if executable('pyright')
+        au User lsp_setup call lsp#register_server({
+              \ 'name': 'pyright',
+              \ 'cmd': {server_info -> ['pyright-langserver', '--stdio']},
+              \ 'whitelist': ['python'],
+              \ 'message': 'lsp-notify',
+              \ })
+      endif
 
-      " Autocompletion using LSP sources
-      " asyncomplete integrates with vim-lsp out of the box
+      " --- Go ---
+      if executable('gopls')
+        au User lsp_setup call lsp#register_server({
+              \ 'name': 'gopls',
+              \ 'cmd': {server_info -> ['gopls']},
+              \ 'whitelist': ['go'],
+              \ 'message': 'lsp-notify',
+              \ })
+        autocmd BufWritePre *.go LspDocumentFormatSync
+      endif
+
+      " --- Rust ---
+      if executable('rust-analyzer')
+        au User lsp_setup call lsp#register_server({
+              \ 'name': 'rust-analyzer',
+              \ 'cmd': {server_info -> ['rust-analyzer']},
+              \ 'whitelist': ['rust'],
+              \ 'message': 'lsp-notify',
+              \ })
+      endif
+
+      " --- TypeScript/JavaScript ---
+      if executable('typescript-language-server')
+        au User lsp_setup call lsp#register_server({
+              \ 'name': 'typescript-language-server',
+              \ 'cmd': {server_info -> ['typescript-language-server', '--stdio']},
+              \ 'whitelist': ['typescript', 'typescriptreact', 'javascript', 'javascriptreact'],
+              \ 'message': 'lsp-notify',
+              \ })
+      endif
+
+      " --- Bash/Shell ---
+      if executable('bash-language-server')
+        au User lsp_setup call lsp#register_server({
+              \ 'name': 'bash-language-server',
+              \ 'cmd': {server_info -> ['bash-language-server', 'start']},
+              \ 'whitelist': ['sh', 'bash'],
+              \ 'message': 'lsp-notify',
+              \ })
+      endif
+
+      " --- C/C++ ---
+      if executable('clangd')
+        au User lsp_setup call lsp#register_server({
+              \ 'name': 'clangd',
+              \ 'cmd': {server_info -> ['clangd', '--background-index']},
+              \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+              \ 'message': 'lsp-notify',
+              \ })
+      endif
+
+      " --- Lua ---
+      if executable('lua-language-server')
+        au User lsp_setup call lsp#register_server({
+              \ 'name': 'lua-language-server',
+              \ 'cmd': {server_info -> ['lua-language-server']},
+              \ 'whitelist': ['lua'],
+              \ 'message': 'lsp-notify',
+              \ })
+      endif
+
+      " Netrw file browser settings
+      let g:netrw_banner = 0
+      let g:netrw_liststyle = 3
+      let g:netrw_browse_split = 4
+      let g:netrw_altv = 1
+      let g:netrw_winsize = 25
+
+      " Autocompletion
       imap <c-space> <Plug>(asyncomplete_force_refresh)
       inoremap <c-n> <Plug>(asyncomplete_skip_dup_backspace)
       let g:asyncomplete_auto_popup = 1
@@ -74,6 +156,13 @@
   };
 
   home.packages = with pkgs; [
-    nil  # Nix language server: https://github.com/oxalica/nil
+    nil                        # Nix
+    pyright                    # Python
+    gopls                      # Go
+    rust-analyzer              # Rust
+    typescript-language-server # TypeScript/JavaScript
+    bash-language-server       # Bash/Shell
+    clang-tools                # C/C++ (provides clangd)
+    lua-language-server        # Lua
   ];
 }
