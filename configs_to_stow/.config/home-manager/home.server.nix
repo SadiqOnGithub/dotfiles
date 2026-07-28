@@ -16,6 +16,7 @@
   home.packages = with pkgs; [
     eza
     bat
+    fd
     zoxide
     fzf
     keychain

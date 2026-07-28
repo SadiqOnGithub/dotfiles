@@ -17,6 +17,7 @@
     # cli tools
     eza
     bat
+    fd
     zoxide
     fzf
 
