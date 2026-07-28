@@ -215,6 +215,14 @@ in
       let g:asyncomplete_auto_completeopt = 1
       set completeopt=menuone,preview,noinsert
 
+      " Yank current file path to system clipboard
+      "   <leader>yp  - absolute path  (/home/user/project/src/main.go)
+      "   <leader>yr  - relative path  (src/main.go)
+      "   <leader>yf  - filename only   (main.go)
+      nnoremap <leader>yp :let @+=expand('%:p')<CR>
+      nnoremap <leader>yr :let @+=expand('%')<CR>
+      nnoremap <leader>yf :let @+=expand('%:t')<CR>
+
       " Yanks go to system clipboard
       set clipboard=unnamedplus
     '';
