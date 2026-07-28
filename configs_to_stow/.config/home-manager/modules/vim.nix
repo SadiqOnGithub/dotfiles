@@ -99,6 +99,11 @@
               \ })
       endif
 
+      " Disabled TS/JS formatting preferences (add to preferences dict to enable):
+      "   'importModuleSpecifier': 'relative',
+      "   'quoteStyle': 'single',
+      "   'semicolons': 'always',
+
       " --- TypeScript/JavaScript ---
       if executable('typescript-language-server')
         au User lsp_setup call lsp#register_server({
@@ -106,7 +111,22 @@
               \ 'cmd': {server_info -> ['typescript-language-server', '--stdio']},
               \ 'whitelist': ['typescript', 'typescriptreact', 'javascript', 'javascriptreact'],
               \ 'message': 'lsp-notify',
+              \ 'root_uri': {server_info -> lsp#utils#path_to_uri(
+              \     lsp#utils#find_nearest_parent_file_directory(
+              \         lsp#utils#get_buffer_path(),
+              \         ['tsconfig.json', 'jsconfig.json', 'package.json', '.git/']
+              \     )
+              \ )},
+              \ 'initializationOptions': {
+              \   'preferences': {
+              \     'includeInlayParameterNameHints': 'all',
+              \     'includeInlayFunctionParameterTypeHints': v:true,
+              \     'includeInlayVariableTypeHints': v:true,
+              \     'includeInlayPropertyDeclarationTypeHints': v:true,
+              \   }
+              \ }
               \ })
+        autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx LspDocumentFormatSync
       endif
 
       " --- Bash/Shell ---
