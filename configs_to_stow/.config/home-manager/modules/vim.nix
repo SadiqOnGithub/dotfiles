@@ -1,4 +1,16 @@
-{ pkgs, ... }:
+{ pkgs, config, lib, ... }:
+let
+  vim-maximizer = pkgs.vimUtils.buildVimPlugin {
+    name = "vim-maximizer";
+    src = pkgs.fetchFromGitHub {
+      owner = "szw";
+      repo = "vim-maximizer";
+      rev = "2e54952fe91e140a2e69f35f22131219fcd9c5f1";
+      sha256 = "031brldzxhcs98xpc3sr0m2yb99xq0z5yrwdlp8i5fqdgqrdqlzr";
+    };
+    meta.homepage = "https://github.com/szw/vim-maximizer";
+  };
+in
 
 {
   # Vim with LSP support for multiple languages
@@ -26,6 +38,9 @@
       # Asynchronous autocompletion integrated with LSP
       asyncomplete-vim
       asyncomplete-lsp-vim
+
+      # Toggle window zoom (maximize/restore)
+      vim-maximizer
     ];
 
     extraConfig = ''
@@ -158,6 +173,10 @@
               \ 'message': 'lsp-notify',
               \ })
       endif
+
+      " Toggle window maximize/restore
+      nnoremap <silent> <leader>z :MaximizerToggle<CR>
+      vnoremap <silent> <leader>z :MaximizerToggle<CR>gv
 
       " Netrw file browser settings
       let g:netrw_banner = 0
