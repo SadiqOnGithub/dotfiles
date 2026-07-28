@@ -6,3 +6,4 @@ configs_to_stow/.bash_aliases
 configs_to_stow/.config/home-manager/result
 work_history.txt
 configs_to_stow/.config/i3/config
+configs_to_stow/.config/i3/cycle-windows.py

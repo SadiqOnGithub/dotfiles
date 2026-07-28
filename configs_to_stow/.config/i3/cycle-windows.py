@@ -1,1 +1,0 @@
-/nix/store/smmb3s3xy4fjg1mfb615h13yc5ayhddq-home-manager-files/.config/i3/cycle-windows.py
