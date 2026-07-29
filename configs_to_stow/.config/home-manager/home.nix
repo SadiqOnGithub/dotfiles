@@ -52,6 +52,9 @@
     # vpn
     tailscale
 
+    # javascript runtime & package manager
+    bun
+
     # power management
     acpi
   ];
