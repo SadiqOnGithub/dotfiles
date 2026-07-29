@@ -180,6 +180,9 @@ in
               \ })
       endif
 
+      " Markdown preview in terminal (via glow)
+      nnoremap <silent> <leader>mp :!glow %<CR>
+
       " Toggle window maximize/restore
       nnoremap <silent> <leader>z :MaximizerToggle<CR>
       vnoremap <silent> <leader>z :MaximizerToggle<CR>gv
@@ -238,5 +241,6 @@ in
     bash-language-server       # Bash/Shell
     clang-tools                # C/C++ (provides clangd)
     lua-language-server        # Lua
+    glow                       # Markdown preview in terminal
   ];
 }

@@ -46,6 +46,9 @@
     # gtk settings daemon for i3 (applies theme to gtk apps)
     xsettingsd
 
+    # database gui
+    dbeaver-bin
+
     # vpn
     tailscale
 
