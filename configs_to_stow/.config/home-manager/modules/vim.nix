@@ -191,6 +191,8 @@ in
       nnoremap gd :LspDefinition<CR>
       nnoremap gr :LspReferences<CR>
       nnoremap K :LspHover<CR>
+      nnoremap ]r :LspNextReference<CR>
+      nnoremap [r :LspPreviousReference<CR>
 
       " Quickfix toggle (LazyVim: <leader>xq)
       function! QuickfixToggle()
