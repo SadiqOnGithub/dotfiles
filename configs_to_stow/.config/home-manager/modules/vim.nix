@@ -211,6 +211,9 @@ in
       let g:netrw_altv = 1
       let g:netrw_winsize = 25
 
+      " Toggle file explorer sidebar (LazyVim: <leader>e)
+      nnoremap <silent> <leader>e :Lexplore<CR>
+
       " Autocompletion
       imap <c-space> <Plug>(asyncomplete_force_refresh)
       inoremap <c-n> <Plug>(asyncomplete_skip_dup_backspace)
