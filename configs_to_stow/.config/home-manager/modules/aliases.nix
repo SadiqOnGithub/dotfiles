@@ -116,6 +116,8 @@
     alias gls="cd ~/Documents/goals"
     alias web="cd ~/Documents/web"
     alias vs="cd ~/Documents/web/okhla-consultancy/vs"
+    alias vsc="cd ~/Documents/web/okhla-consultancy/vs/vs_custom_quotation"
+    alias cq="cd ~/Documents/web/okhla-consultancy/custom_quotation"
     alias oss="cd ~/Documents/web/oss"
     alias prac="cd ~/Documents/web/prac"
     alias rus="cd ~/Documents/web/prac/rust"

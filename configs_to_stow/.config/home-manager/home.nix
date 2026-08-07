@@ -43,6 +43,9 @@
     # notification utility
     libnotify
 
+    # audio gui
+    pavucontrol
+
     # gtk settings daemon for i3 (applies theme to gtk apps)
     xsettingsd
 
