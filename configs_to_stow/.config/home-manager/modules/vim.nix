@@ -58,12 +58,20 @@ in
       syntax on
 
       " Gruvbox theme (high-contrast variant, colorblind-friendly)
+      set termguicolors
+      set background=dark
       let g:gruvbox_contrast_dark = 'hard'
       let g:gruvbox_sign_column = 'bg0'
+
+      " Force pure black background (must be set before colorscheme so it
+      " fires on the initial ColorScheme event)
+      autocmd ColorScheme * highlight Normal guibg=#000000 ctermbg=0
+
       colorscheme gruvbox
 
       " General settings
       set tabstop=4 shiftwidth=4 expandtab
+      set number relativenumber
 
       " Filetype-specific indentation
       au BufRead,BufNewFile *.nix setlocal shiftwidth=2 tabstop=2 expandtab
