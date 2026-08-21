@@ -102,7 +102,6 @@ in
               \ 'whitelist': ['nix'],
               \ 'message': 'lsp-notify',
               \ })
-        autocmd BufWritePre *.nix LspDocumentFormatSync
       endif
 
       " --- Python ---
@@ -123,7 +122,6 @@ in
               \ 'whitelist': ['go'],
               \ 'message': 'lsp-notify',
               \ })
-        autocmd BufWritePre *.go LspDocumentFormatSync
       endif
 
       " --- Rust ---
@@ -163,7 +161,6 @@ in
               \   }
               \ }
               \ })
-        autocmd BufWritePre *.ts,*.tsx,*.js,*.jsx LspDocumentFormatSync
       endif
 
       " --- Bash/Shell ---
@@ -249,6 +246,11 @@ in
 
       " Yanks go to system clipboard
       set clipboard=unnamedplus
+
+      " Folding: use the language's syntax structure; open fully folded
+      set foldmethod=syntax
+      set foldnestmax=10
+      set foldlevelstart=0
     '';
   };
 
