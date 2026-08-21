@@ -20,6 +20,16 @@
 
     initExtra = ''
       # ===========================
+      # Stable SSH agent socket (forwarded keys survive tmux reattach)
+      # ===========================
+      if [ -n "$SSH_AUTH_SOCK" ] && [ "$SSH_AUTH_SOCK" != "$HOME/.ssh/agent.sock" ]; then
+        ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/agent.sock"
+      fi
+      if [ -e "$HOME/.ssh/agent.sock" ]; then
+        export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"
+      fi
+
+      # ===========================
       # PATH exports
       # ===========================
       export PATH="$HOME/.nix-profile/bin:$PATH"
