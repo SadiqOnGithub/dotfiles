@@ -14,7 +14,6 @@
       NVM_DIR = "$HOME/.nvm";
       ANDROID_HOME = "$HOME/Android/Sdk";
       JAVA_HOME = "/usr/lib/jvm/java-17-openjdk-amd64";
-      DOCKER_HOST = "unix:///run/user/1000/docker.sock";
       PNPM_HOME = "$HOME/.local/share/pnpm";
     };
 
