@@ -17,6 +17,11 @@
       set -g set-clipboard on
       set-option -g update-environment "SSH_AUTH_SOCK SSH_CONNECTION SSH_CLIENT SSH_TTY"
 
+      # Open new windows/panes in current directory
+      bind c new-window -c "#{pane_current_path}"
+      bind '"' split-window -v -c "#{pane_current_path}"
+      bind % split-window -h -c "#{pane_current_path}"
+
       # Shift Alt vim keys to switch windows
       bind -n M-H previous-window
       bind -n M-L next-window
