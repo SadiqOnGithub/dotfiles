@@ -32,6 +32,23 @@
       setopt AUTO_CD             # type directory name to cd into it
       setopt CORRECT             # suggest corrections for misspelled commands
 
+      # -- Key bindings --
+      bindkey -e                     # use emacs keymap (default, but explicit)
+      # Ctrl+Left / Ctrl+Right → jump word (GNOME Terminal sends ^[[1;5C / ^[[1;5D)
+      bindkey '^[[1;5C' forward-word
+      bindkey '^[[1;5D' backward-word
+      # Alt+Left / Alt+Right → jump word (GNOME Terminal sends ^[[1;3C / ^[[1;3D) — parity with bash
+      bindkey '^[[1;3C' forward-word
+      bindkey '^[[1;3D' backward-word
+      # Fallback escape sequences for other terminals / tmux
+      bindkey '^[Oc' forward-word
+      bindkey '^[Od' backward-word
+      bindkey '^[[5C' forward-word
+      bindkey '^[[5D' backward-word
+      # Extra bash-compatible sequences (\e\e[C / \e\e[D) for bash parity
+      bindkey '^[^[[C' forward-word
+      bindkey '^[^[[D' backward-word
+
       # -- PATH exports --
       export PATH="$HOME/.local/bin:$PATH"
       export PATH="$PATH:$ANDROID_HOME/emulator"
