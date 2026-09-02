@@ -19,6 +19,7 @@
     fd
     zoxide
     fzf
+    tealdeer
     keychain
 
     # vpn

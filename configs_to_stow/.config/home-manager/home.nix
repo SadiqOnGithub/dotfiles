@@ -21,6 +21,7 @@
     fd
     zoxide
     fzf
+    tealdeer
 
     # rofi launcher
     rofi
