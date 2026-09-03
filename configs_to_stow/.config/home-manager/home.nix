@@ -9,8 +9,9 @@
     LC_ALL = "en_US.UTF-8";
   };
 
-  home.sessionPath = [
+   home.sessionPath = [
     "${config.home.homeDirectory}/.nix-profile/bin"
+    "${config.home.homeDirectory}/.local/bin"
   ];
 
   home.packages = with pkgs; [
@@ -46,11 +47,17 @@
     # audio gui
     pavucontrol
 
+    # media player (audio/video playback)
+    mpv
+
     # gtk settings daemon for i3 (applies theme to gtk apps)
     xsettingsd
 
     # database gui
     dbeaver-bin
+
+    # notes
+    obsidian
 
     # vpn
     tailscale
@@ -60,6 +67,19 @@
 
     # power management
     acpi
+
+    # OpenWhispr dependencies (for system-wide pasting)
+    xdotool
+    wl-clipboard
+    wtype
+    libsecret
+    xdg-utils
+
+    # OpenWhispr - voice dictation (cloud-based, runs via downloaded binary)
+    (pkgs.writeShellScriptBin "openwhispr" ''
+      cd /home/sadiq/.local/share/openwhispr/OpenWhispr-1.9.2-linux-x64
+      exec ./open-whispr "$@"
+    '')
   ];
 
   imports = [
@@ -74,6 +94,7 @@
     ./modules/gtk.nix
     ./modules/dunst.nix
     ./modules/i3.nix
+    ./modules/syncthing.nix
   ];
 
   programs.home-manager.enable = true;

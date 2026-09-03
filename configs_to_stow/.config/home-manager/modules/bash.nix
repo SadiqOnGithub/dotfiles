@@ -48,15 +48,23 @@
       # ===========================
       # SSH Agent
       # ===========================
-      ssh_keys=()
-      for key in "$HOME/.ssh/id_rsa" "$HOME/.ssh/github" "$HOME/.ssh/ansible"; do
-        if [ -f "$key" ]; then
-          ssh_keys+=("$key")
-        fi
-      done
-      if [ ''${#ssh_keys[@]} -gt 0 ]; then
-        eval "$(keychain --eval --agents ssh --inherit any-once "''${ssh_keys[@]}")"
+      # Reuse the already-running agent; only spawn keychain if it is missing.
+      _kc="$HOME/.keychain/$(hostname)-sh"
+      if [ -z "$SSH_AUTH_SOCK" ] && [ -f "$_kc" ]; then
+        . "$_kc"
       fi
+      if ! ssh-add -l >/dev/null 2>&1; then
+        ssh_keys=()
+        for key in "$HOME/.ssh/id_rsa" "$HOME/.ssh/github" "$HOME/.ssh/ansible"; do
+          if [ -f "$key" ]; then
+            ssh_keys+=("$key")
+          fi
+        done
+        if [ ''${#ssh_keys[@]} -gt 0 ]; then
+          eval "$(keychain --eval --quiet --agents ssh --inherit any-once "''${ssh_keys[@]}")"
+        fi
+      fi
+      unset _kc
 
       # ===========================
       # Source shared aliases & functions
@@ -68,12 +76,27 @@
       # Tool initialization
       # ===========================
 
-      # NVM
+      # NVM: put default Node on PATH; load nvm.sh only when `nvm` is called.
       if [ -s "$NVM_DIR/nvm.sh" ]; then
-        \. "$NVM_DIR/nvm.sh"
-      fi
-      if [ -s "$NVM_DIR/bash_completion" ]; then
-        \. "$NVM_DIR/bash_completion"
+        _nvm_default="$(cat "$NVM_DIR/alias/default" 2>/dev/null)"
+        if [ -n "$_nvm_default" ] && [ -f "$NVM_DIR/alias/$_nvm_default" ]; then
+          _nvm_default="$(cat "$NVM_DIR/alias/$_nvm_default")"
+        fi
+        _nvm_default="''${_nvm_default#v}"
+        for _nvm_bin in "$NVM_DIR/versions/node/v''${_nvm_default}"*/bin "$NVM_DIR/versions/node/''${_nvm_default}"*/bin; do
+          if [ -d "$_nvm_bin" ]; then
+            export PATH="$_nvm_bin:$PATH"
+            export NVM_BIN="$_nvm_bin"
+            break
+          fi
+        done
+        unset _nvm_default _nvm_bin
+        nvm() {
+          unset -f nvm
+          . "$NVM_DIR/nvm.sh"
+          [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+          nvm "$@"
+        }
       fi
 
       # Cargo

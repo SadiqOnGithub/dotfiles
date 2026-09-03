@@ -15,6 +15,8 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
+        config.allowUnfreePredicate = pkg:
+          builtins.elem (nixpkgs.lib.getName pkg) [ "obsidian" ];
       };
     in {
       homeConfigurations.sadiq = home-manager.lib.homeManagerConfiguration {
