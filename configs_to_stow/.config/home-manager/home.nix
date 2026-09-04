@@ -18,6 +18,7 @@
     # cli tools
     eza
     bat
+    git-lfs
     fd
     zoxide
     fzf
