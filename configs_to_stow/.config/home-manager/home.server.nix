@@ -27,6 +27,9 @@
 
     # power management
     acpi
+
+    # media player
+    mpv
   ];
 
   imports = [
