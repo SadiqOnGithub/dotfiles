@@ -10,6 +10,14 @@ let
     };
     meta.homepage = "https://github.com/szw/vim-maximizer";
   };
+  previm = pkgs.vimUtils.buildVimPlugin {
+    name = "previm";
+    src = pkgs.fetchzip {
+      url = "https://github.com/previm/previm/archive/29524dba1dfad1e77a8670b8c133af96f31582a7.tar.gz";
+      hash = "sha256-11T5iz5daLPUJVElLSKg3IESxqZbpIvx9YrBgvUwY3s=";
+    };
+    meta.homepage = "https://github.com/previm/previm";
+  };
 in
 
 {
@@ -47,6 +55,9 @@ in
 
       # Toggle window zoom (maximize/restore)
       vim-maximizer
+
+      # Live Markdown preview in browser
+      previm
 
       # High-contrast theme (colorblind-friendly)
       gruvbox
@@ -193,8 +204,10 @@ in
               \ })
       endif
 
-      " Markdown preview in terminal (via glow)
-      nnoremap <silent> <leader>mp :!glow %<CR>
+      " Live Markdown preview in browser (via previm)
+      let g:previm_open_cmd = 'xdg-open'
+      nnoremap <silent> <leader>mp :PrevimOpen<CR>
+      nnoremap <silent> <leader>mr :PrevimRefresh<CR>
 
       " Toggle window maximize/restore
       nnoremap <silent> <leader>z :MaximizerToggle<CR>
@@ -264,6 +277,5 @@ in
     bash-language-server       # Bash/Shell
     clang-tools                # C/C++ (provides clangd)
     lua-language-server        # Lua
-    glow                       # Markdown preview in terminal
   ];
 }
