@@ -59,6 +59,9 @@ in
       # Live Markdown preview in browser
       previm
 
+      # Node-based live Markdown preview (trial alternative)
+      markdown-preview-nvim
+
       # High-contrast theme (colorblind-friendly)
       gruvbox
     ];
@@ -206,8 +209,13 @@ in
 
       " Live Markdown preview in browser (via previm)
       let g:previm_open_cmd = 'xdg-open'
+      " Previm defaults to writing previews inside its own plugin dir,
+      " which is read-only under Nix — redirect to a writable cache dir
+      let g:previm_custom_preview_base_dir = $HOME . '/.cache/previm/'
       nnoremap <silent> <leader>mp :PrevimOpen<CR>
       nnoremap <silent> <leader>mr :PrevimRefresh<CR>
+      " Node-based live preview (markdown-preview.nvim) — trial
+      nnoremap <silent> <leader>mP :MarkdownPreviewToggle<CR>
 
       " Toggle window maximize/restore
       nnoremap <silent> <leader>z :MaximizerToggle<CR>
@@ -277,5 +285,6 @@ in
     bash-language-server       # Bash/Shell
     clang-tools                # C/C++ (provides clangd)
     lua-language-server        # Lua
+    nodejs                     # Runtime for markdown-preview-nvim server
   ];
 }
