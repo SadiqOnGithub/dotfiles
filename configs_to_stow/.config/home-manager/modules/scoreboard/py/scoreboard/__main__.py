@@ -16,12 +16,12 @@ commands:
   show       snapshot and print (default)
   watch      refresh loop (i3 overlay)
   snapshot   write today's JSON, one-line log
-  auth       Google Tasks via gcloud (preferred)
+  auth       gcloud ADC login (Desktop client JSON + Tasks readonly)
   selftest   run local unit checks
 
-Google: `scoreboard auth` runs gcloud login with Tasks readonly
-and enables the Tasks API on your GCP project. Desktop OAuth JSON
-is only a fallback if gcloud is missing.
+Google: put the Desktop OAuth JSON at
+  ~/.config/scoreboard/google-client.json
+then `scoreboard auth`. Quota project: local.toml google_quota_project.
 
 GitHub: uses the existing `gh` CLI. Local git uses git_roots in
   ~/.config/scoreboard/config.toml

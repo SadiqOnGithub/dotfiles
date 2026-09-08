@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import shutil
 import subprocess
-
+from pathlib import Path
 
 TASKS_SCOPE = "https://www.googleapis.com/auth/tasks.readonly"
 LOGIN_SCOPES = ",".join(
@@ -41,12 +41,10 @@ def _run(args: list[str], *, timeout: int = 60) -> tuple[str, str | None]:
 def access_token() -> tuple[str | None, str | None]:
     out, err = _run(["auth", "application-default", "print-access-token"])
     if err:
-        out, err = _run(["auth", "print-access-token"])
-    if err:
         return None, err
     token = out.splitlines()[0].strip() if out else ""
     if not token:
-        return None, "gcloud print-access-token returned empty"
+        return None, "gcloud ADC token empty — run: scoreboard auth"
     return token, None
 
 
@@ -57,48 +55,28 @@ def current_project() -> str | None:
     return out.splitlines()[0].strip()
 
 
-def login() -> int:
+def login(client_json: Path) -> int:
     binary = gcloud_bin()
     if not binary:
-        print("gcloud is not on PATH. Add google-cloud-sdk via Home Manager and switch.")
+        print("gcloud is not on PATH.")
         return 1
-    print("Logging into gcloud (browser).")
-    login = subprocess.run(
-        [binary, "auth", "login", "--brief", "--update-adc"],
-        check=False,
-    )
-    if login.returncode != 0:
-        return login.returncode
-    print("Requesting Tasks readonly on application-default credentials (browser).")
-    adc = subprocess.run(
+    if not client_json.is_file():
+        print("Missing Desktop OAuth client JSON:")
+        print(f"  {client_json}")
+        return 1
+    print("Opening browser for Tasks readonly (your Desktop client).")
+    proc = subprocess.run(
         [
             binary,
             "auth",
             "application-default",
             "login",
+            f"--client-id-file={client_json}",
             f"--scopes={LOGIN_SCOPES}",
         ],
         check=False,
     )
-    return adc.returncode
-
-
-def ensure_project(preferred: str = "sadiq-scoreboard") -> tuple[str | None, str | None]:
-    existing = current_project()
-    if existing:
-        return existing, None
-    _, err = _run(["projects", "create", preferred, "--name=scoreboard"], timeout=120)
-    if err and "already exists" not in err.lower() and "409" not in err:
-        listed, list_err = _run(["projects", "list", "--format=value(projectId)", "--limit=1"])
-        if list_err or not listed:
-            return None, err
-        project = listed.splitlines()[0].strip()
-    else:
-        project = preferred
-    _, err = _run(["config", "set", "project", project])
-    if err:
-        return None, err
-    return project, None
+    return proc.returncode
 
 
 def enable_tasks_api(project: str) -> str | None:

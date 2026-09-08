@@ -3,7 +3,7 @@
 let
   src = ./scoreboard/py;
   gcloud = pkgs.google-cloud-sdk;
-  scoreboardPath = lib.makeBinPath [ pkgs.git gcloud ];
+  scoreboardPath = lib.makeBinPath [ gcloud ];
   scoreboard = pkgs.writeShellScriptBin "scoreboard" ''
     export PYTHONPATH=${src}
     export TZDIR=${pkgs.tzdata}/share/zoneinfo
@@ -12,7 +12,7 @@ let
     exec ${pkgs.python3}/bin/python3 -m scoreboard "$@"
   '';
   scoreboardBin = "${scoreboard}/bin/scoreboard";
-  scoreboardWatch = pkgs.writeShellScriptBin "scoreboard-watch" ''
+  overlay = pkgs.writeShellScript "scoreboard-overlay" ''
     exec ${scoreboardBin} watch
   '';
   python = "${pkgs.python3}/bin/python3";
@@ -28,13 +28,7 @@ let
       exit 0
     fi
 
-    if command -v ghostty >/dev/null 2>&1; then
-      ghostty --class=scoreboard --x11-instance-name=scoreboard -e ${scoreboardWatch}/bin/scoreboard-watch >/dev/null 2>&1 &
-    elif command -v gnome-terminal >/dev/null 2>&1; then
-      gnome-terminal --class=scoreboard --title=scoreboard -- ${scoreboardWatch}/bin/scoreboard-watch >/dev/null 2>&1 &
-    else
-      xterm -class scoreboard -T scoreboard -e ${scoreboardWatch}/bin/scoreboard-watch >/dev/null 2>&1 &
-    fi
+    ghostty --class=scoreboard --x11-instance-name=scoreboard -e ${overlay} >/dev/null 2>&1 &
 
     i=0
     while [ "$i" -lt 100 ]; do
@@ -50,7 +44,7 @@ let
   '';
 in
 {
-  home.packages = [ scoreboard scoreboardWatch toggle pkgs.git gcloud ];
+  home.packages = [ scoreboard toggle gcloud ];
 
   xdg.configFile."scoreboard/config.toml".text = ''
     # Managed by Home Manager. Overrides: ~/.config/scoreboard/local.toml
@@ -63,6 +57,7 @@ in
     poll_seconds = 30
     git_author_emails = ["sadiqonemail@gmail.com"]
     git_roots = ["~/dotfiles", "~/Documents", "~/Arduino"]
+    google_quota_project = "gen-lang-client-0236258077"
   '';
 
   systemd.user.services.scoreboard-snapshot = {
