@@ -18,6 +18,12 @@
   xsession.windowManager.i3 = {
     enable = true;
 
+    extraConfig = ''
+      for_window [class="scoreboard"] floating enable, resize set 900 560, move position center
+      for_window [instance="scoreboard"] floating enable, resize set 900 560, move position center
+      for_window [title="^scoreboard$"] floating enable, resize set 900 560, move position center
+    '';
+
     config = {
       modifier = "Mod4";
 
@@ -175,6 +181,9 @@
         # Mod+- shows the next hidden window, Mod+Shift+- hides the focused window
         "${m}+minus" = "scratchpad show";
         "${m}+Shift+minus" = "move scratchpad";
+
+        # daily Tasks + git scoreboard (named scratchpad, not the i3 bar)
+        "${m}+t" = "exec --no-startup-id scoreboard-toggle";
 
         # volume
         "XF86AudioRaiseVolume" = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && dunstify -h int:value:\"$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\\d+%' | head -1 | tr -d '%')\" -h string:x-dunst-stack-tag:volumenotif \"Volume\"";

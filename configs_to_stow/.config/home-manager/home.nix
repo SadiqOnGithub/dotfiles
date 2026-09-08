@@ -96,6 +96,7 @@
     ./modules/gtk.nix
     ./modules/dunst.nix
     ./modules/i3.nix
+    ./modules/scoreboard.nix
     ./modules/syncthing.nix
   ];
 
