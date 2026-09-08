@@ -4,7 +4,7 @@ import sys
 
 from .collect import snapshot
 from .config import load_config
-from .render import render
+from .render import render, want_color
 from .selftest import run as run_selftest
 from .tasks import auth_google
 from .tui import watch
@@ -42,7 +42,7 @@ def main(argv: list[str] | None = None) -> int:
     cfg = load_config()
     if cmd in ("show",):
         snap = snapshot(cfg)
-        sys.stdout.write(render(snap, cfg, footer=False))
+        sys.stdout.write(render(snap, cfg, footer=False, color=want_color()))
         return 0
     if cmd in ("watch", "--watch"):
         return watch(cfg)

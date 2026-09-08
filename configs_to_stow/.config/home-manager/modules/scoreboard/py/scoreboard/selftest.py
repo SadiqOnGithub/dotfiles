@@ -7,7 +7,8 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 from .gitlocal import collect_local, discover_repos
-from .render import sparkline, target_bar
+from .config import Config
+from .render import render, sparkline, target_bar
 from .store import merge_completed
 from .tasks import Task, classify_tasks
 from .timeutil import as_tz_date, day_bounds, due_calendar_date, parse_rfc3339
@@ -92,6 +93,29 @@ def test_sparkline_and_bar() -> None:
     _check(target_bar(12, 10, 10) == "██████████", "over-target bar")
 
 
+def test_render_no_ansi() -> None:
+    snap = {
+        "date": "2026-09-08",
+        "updated_at": "2026-09-08T19:40:00+05:30",
+        "tasks": {
+            "ok": True,
+            "completed": 3,
+            "pending": 24,
+            "overdue": 6,
+            "leftover_by_list": {"Work": 4, "Home": 2},
+        },
+        "commits": {"local": 7, "github": 5, "unpushed_hint": 0},
+        "series": {"local": {"2026-09-08": 7}, "github": {"2026-09-08": 5}},
+        "errors": [],
+    }
+    out = render(snap, Config(), footer=True, color=False)
+    _check("\033" not in out, f"ansi leaked: {out!r}")
+    _check("overdue" in out, "missing overdue")
+    _check("unpushed" not in out, "unpushed shown at 0")
+    _check("19:40" in out, f"clock missing: {out}")
+    _check("q close" in out, "footer missing")
+
+
 def test_discover_and_local_git() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
@@ -137,6 +161,7 @@ def run() -> int:
         test_classify,
         test_merge_completed_union_and_untick,
         test_sparkline_and_bar,
+        test_render_no_ansi,
         test_discover_and_local_git,
     ]
     failed = 0
