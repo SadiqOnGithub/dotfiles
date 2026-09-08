@@ -21,6 +21,7 @@
     alias g="git"
     alias gtr="gnome-terminal"
     alias cc="xclip -selection clipboard"
+    alias pwdc="pwd | cc"
     alias gcn='git log --reverse --format="%H" HEAD..master | head -1 | xargs git checkout'
     alias gcp="git checkout HEAD~1"
     alias t="tmux"
@@ -123,6 +124,7 @@
     alias prac="cd ~/Documents/web/prac"
     alias rus="cd ~/Documents/web/prac/rust"
     alias rusp="cd ~/Documents/web/prac/rust/rust-prac"
+    alias know="cd ~/Documents/Knowledge"
     alias 100x="cd ~/Documents/web/100x"
     alias doc="cd ~/Documents/web/docker"
     alias k8="cd ~/Documents/web/k8"
