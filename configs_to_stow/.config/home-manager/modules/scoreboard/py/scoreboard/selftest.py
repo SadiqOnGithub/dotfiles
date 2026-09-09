@@ -9,8 +9,8 @@ from pathlib import Path
 from .gitlocal import collect_local, discover_repos
 from .config import Config
 from .render import render, sparkline, target_bar
-from .store import merge_completed
-from .tasks import Task, classify_tasks
+from .store import merge_completed, merge_recent
+from .tasks import Task, classify_tasks, recent_closed
 from .timeutil import as_tz_date, day_bounds, due_calendar_date, parse_rfc3339
 
 
@@ -84,6 +84,25 @@ def test_merge_completed_union_and_untick() -> None:
     _check(ids == ["a", "c"], f"merged ids {ids}")
 
 
+def test_recent_closed() -> None:
+    tasks = [
+        Task("a", "older", "Work", "completed", None, "2026-09-07T10:00:00+05:30"),
+        Task("b", "newest", "Home", "completed", None, "2026-09-08T18:00:00+05:30"),
+        Task("c", "open", "Work", "needsAction", None, None),
+        Task("d", "mid", "Work", "completed", None, "2026-09-08T12:00:00+05:30"),
+    ]
+    closed = recent_closed(tasks, limit=2)
+    _check([x["id"] for x in closed] == ["b", "d"], f"closed {closed}")
+    merged = merge_recent(
+        [{"id": "a", "completed": "2026-09-07T10:00:00+05:30", "title": "older"}],
+        closed,
+        id_key="id",
+        time_key="completed",
+        limit=10,
+    )
+    _check([x["id"] for x in merged] == ["b", "d", "a"], f"merged {merged}")
+
+
 def test_sparkline_and_bar() -> None:
     line = sparkline([0, 1, 5, 10])
     _check(len(line) == 4, f"sparkline {line!r}")
@@ -106,6 +125,22 @@ def test_render_no_ansi() -> None:
         },
         "commits": {"local": 7, "github": 5, "unpushed_hint": 0},
         "series": {"local": {"2026-09-08": 7}, "github": {"2026-09-08": 5}},
+        "tz": "Asia/Kolkata",
+        "recent_closed": [
+            {
+                "id": "x",
+                "title": "ship it",
+                "completed": "2026-09-08T18:01:00+05:30",
+            }
+        ],
+        "recent_github": [
+            {
+                "sha": "abc",
+                "message": "polish ui",
+                "repo": "dotfiles",
+                "date": "2026-09-08T18:05:00+05:30",
+            }
+        ],
         "errors": [],
     }
     out = render(snap, Config(), footer=True, color=False)
@@ -114,6 +149,11 @@ def test_render_no_ansi() -> None:
     _check("unpushed" not in out, "unpushed shown at 0")
     _check("19:40" in out, f"clock missing: {out}")
     _check("q close" in out, "footer missing")
+    _check("closed" in out and "ship it" in out, "closed list missing")
+    _check("pushed" in out and "polish ui" in out, "pushed list missing")
+    _check(out.count("IST") == 1, "heading repeated on refresh-style render")
+    paired = [ln for ln in out.splitlines() if "closed" in ln and "pushed" in ln]
+    _check(paired, "closed/pushed should share a row")
 
 
 def test_discover_and_local_git() -> None:
@@ -160,6 +200,7 @@ def run() -> int:
         test_day_bounds,
         test_classify,
         test_merge_completed_union_and_untick,
+        test_recent_closed,
         test_sparkline_and_bar,
         test_render_no_ansi,
         test_discover_and_local_git,

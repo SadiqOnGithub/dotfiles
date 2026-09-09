@@ -169,3 +169,20 @@ def classify_tasks(
         else:
             pending += 1
     return completed_today, pending, overdue, leftover, open_ids
+
+
+def recent_closed(tasks: list[Task], limit: int = 10) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    for task in tasks:
+        if task.status != "completed" or not task.completed:
+            continue
+        items.append(
+            {
+                "id": task.id,
+                "title": task.title,
+                "list": task.list_title,
+                "completed": task.completed,
+            }
+        )
+    items.sort(key=lambda item: item["completed"], reverse=True)
+    return items[:limit]

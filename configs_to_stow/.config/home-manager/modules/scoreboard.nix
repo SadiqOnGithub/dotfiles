@@ -28,12 +28,12 @@ let
       exit 0
     fi
 
-    ghostty --class=scoreboard --x11-instance-name=scoreboard -e ${overlay} >/dev/null 2>&1 &
+    ghostty --class=scoreboard --x11-instance-name=scoreboard --scrollback-limit=0 -e ${overlay} >/dev/null 2>&1 &
 
     i=0
     while [ "$i" -lt 100 ]; do
       if exists; then
-        i3-msg '[title="^scoreboard$"] floating enable, resize set 900 560, move position center, move scratchpad, scratchpad show' >/dev/null
+        i3-msg '[title="^scoreboard$"] floating enable, resize set 900 720, move position center, move scratchpad, scratchpad show' >/dev/null
         exit 0
       fi
       i=$((i + 1))

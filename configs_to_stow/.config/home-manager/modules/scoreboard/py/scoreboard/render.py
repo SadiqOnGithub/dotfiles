@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import os
 import sys
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from .config import Config
 from .timeutil import parse_rfc3339
@@ -70,6 +71,23 @@ def _fmt_github(value: int | None) -> str:
     return "?" if value is None else str(value)
 
 
+def _when(value: str | datetime | None, tz_name: str) -> str:
+    if isinstance(value, datetime):
+        dt = value
+    else:
+        dt = parse_rfc3339(value)
+    if dt is None:
+        return ""
+    return dt.astimezone(ZoneInfo(tz_name)).strftime("%d %b %H:%M")
+
+
+def _clip(text: str, width: int) -> str:
+    text = text.replace("\n", " ").strip()
+    if len(text) <= width:
+        return text
+    return text[: width - 1] + "…"
+
+
 def _clock(updated_at: str | None) -> str:
     dt = parse_rfc3339(updated_at)
     if dt is None:
@@ -87,6 +105,54 @@ def _target_status(count: int, lo: int, hi: int) -> str:
     if count > hi:
         return "over"
     return "in range"
+
+
+def _stamp(value: str | datetime | None, tz_name: str, on: bool) -> str:
+    when = _when(value, tz_name)
+    return _c(on, f"{when:<12}", DIM) if when else " " * 12
+
+
+def _closed_cell(item: dict[str, Any], tz_name: str, on: bool, title_w: int = 28) -> str:
+    title = _clip(str(item.get("title") or "(untitled)"), title_w)
+    return f"{title:<{title_w}}  {_stamp(item.get('completed'), tz_name, on)}"
+
+
+def _pushed_cell(item: dict[str, Any], tz_name: str, on: bool, title_w: int = 22) -> str:
+    title = _clip(str(item.get("message") or item.get("sha") or ""), title_w)
+    repo = _clip(str(item.get("repo") or ""), 10)
+    return f"{title:<{title_w}}  {_stamp(item.get('date'), tz_name, on)}  {repo:<10}"
+
+
+def _feeds(
+    closed: list[dict[str, Any]],
+    pushed: list[dict[str, Any]],
+    tz_name: str,
+    on: bool,
+) -> list[str]:
+    if not closed and not pushed:
+        return []
+    out = [""]
+    if closed and pushed:
+        # Side by side so the glance still fits the overlay after a refresh.
+        left_w = 28 + 2 + 12
+        gap = 3
+        pad = 4 + left_w + gap - 2 - len("closed")
+        out.append(f"  {_c(on, 'closed', DIM)}{' ' * pad}{_c(on, 'pushed', DIM)}")
+        n = max(len(closed), len(pushed))
+        for i in range(n):
+            left = _closed_cell(closed[i], tz_name, on) if i < len(closed) else " " * left_w
+            right = _pushed_cell(pushed[i], tz_name, on) if i < len(pushed) else ""
+            out.append(f"    {left}{' ' * gap}{right}".rstrip())
+        return out
+    if closed:
+        out.append(f"  {_c(on, 'closed', DIM)}")
+        for item in closed:
+            out.append(f"    {_closed_cell(item, tz_name, on, title_w=36)}")
+        return out
+    out.append(f"  {_c(on, 'pushed', DIM)}")
+    for item in pushed:
+        out.append(f"    {_pushed_cell(item, tz_name, on, title_w=28)}")
+    return out
 
 
 def render(
@@ -150,6 +216,11 @@ def render(
         for name, count in leftover.items():
             label = name if len(name) <= width else name[: width - 1] + "…"
             lines.append(f"    {label:<{width}}  {int(count):>3}")
+
+    tz_name = str(snapshot.get("tz") or cfg.timezone)
+    closed = list(snapshot.get("recent_closed") or [])[:10]
+    pushed = list(snapshot.get("recent_github") or [])[:10]
+    lines.extend(_feeds(closed, pushed, tz_name, on))
 
     local_vals = _ordered_counts(series.get("local") or {}, day)
     gh_vals = _ordered_counts(series.get("github") or {}, day)

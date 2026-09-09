@@ -6,9 +6,11 @@ from typing import Any
 from .config import Config
 from .github import collect_github
 from .gitlocal import collect_local
-from .store import load_day, load_json, merge_completed, save_day, save_json
-from .tasks import classify_tasks, fetch_tasks
+from .store import load_day, load_json, merge_completed, merge_recent, save_day, save_json
+from .tasks import classify_tasks, fetch_tasks, recent_closed
 from .timeutil import now_tz, today
+
+RECENT = 10
 
 
 def _series_counts(buckets: dict[str, list[Any]]) -> dict[str, int]:
@@ -30,6 +32,9 @@ def snapshot(cfg: Config) -> dict[str, Any]:
     pending = 0
     overdue = 0
     leftover: dict[str, int] = {}
+    closed: list[dict[str, Any]] = []
+    closed_path = cfg.data_dir / "recent-closed.json"
+    stored_closed = list((load_json(closed_path) or {}).get("items") or [])
     tasks_ok = False
     tasks, tasks_err = fetch_tasks(cfg)
     if tasks_err:
@@ -40,12 +45,21 @@ def snapshot(cfg: Config) -> dict[str, Any]:
             pending = int(prev_tasks.get("pending") or 0)
             overdue = int(prev_tasks.get("overdue") or 0)
             leftover = dict(prev_tasks.get("leftover_by_list") or {})
+        closed = list((previous or {}).get("recent_closed") or stored_closed)
     else:
         assert tasks is not None
         new_completed, pending, overdue, leftover, open_ids = classify_tasks(
             tasks, day, tz_name
         )
         completed_items = merge_completed(previous, new_completed, open_ids)
+        closed = merge_recent(
+            stored_closed,
+            recent_closed(tasks, RECENT),
+            id_key="id",
+            time_key="completed",
+            limit=RECENT,
+        )
+        save_json(closed_path, {"items": closed})
         tasks_ok = True
 
     local_buckets = collect_local(cfg.expand_roots(), cfg.git_author_emails, tz_name, day)
@@ -56,6 +70,7 @@ def snapshot(cfg: Config) -> dict[str, Any]:
     github_ok = False
     github_cached_today = False
     gh_today_shas: list[str] = []
+    recent_github: list[dict[str, Any]] = []
     cache_path = cfg.data_dir / "github-cache.json"
     if cfg.github:
         gh_buckets, gh_err = collect_github(tz_name, day)
@@ -67,9 +82,27 @@ def snapshot(cfg: Config) -> dict[str, Any]:
             if cached and cached.get("date") == day.isoformat():
                 gh_today_shas = list(cached.get("shas_today") or [])
                 github_cached_today = True
+            recent_github = list((cached or {}).get("recent") or [])
         else:
             gh_series = _series_counts(gh_buckets)
             gh_today_shas = [c.sha for c in gh_buckets.get(day.isoformat(), [])]
+            flat = [c for cs in gh_buckets.values() for c in cs]
+            flat.sort(key=lambda c: c.author_date, reverse=True)
+            seen_sha: set[str] = set()
+            for commit in flat:
+                if commit.sha in seen_sha:
+                    continue
+                seen_sha.add(commit.sha)
+                recent_github.append(
+                    {
+                        "sha": commit.sha,
+                        "message": commit.message or commit.sha[:7],
+                        "repo": commit.repo,
+                        "date": commit.author_date.isoformat(),
+                    }
+                )
+                if len(recent_github) >= RECENT:
+                    break
             github_ok = True
             save_json(
                 cache_path,
@@ -78,6 +111,7 @@ def snapshot(cfg: Config) -> dict[str, Any]:
                     "date": day.isoformat(),
                     "series": gh_series,
                     "shas_today": gh_today_shas,
+                    "recent": recent_github,
                 },
             )
 
@@ -104,6 +138,8 @@ def snapshot(cfg: Config) -> dict[str, Any]:
             "leftover_by_list": leftover_sorted,
             "completed_items": completed_items,
         },
+        "recent_closed": closed,
+        "recent_github": recent_github,
         "commits": {
             "local": len(local_today),
             "github": github_count,

@@ -14,6 +14,7 @@ class GhCommit:
     sha: str
     author_date: datetime
     repo: str
+    message: str
 
 
 def _run_gh(args: list[str], timeout: int = 45) -> tuple[str, str | None]:
@@ -93,12 +94,16 @@ def collect_github(
         commit = item.get("commit") or {}
         author = commit.get("author") or {}
         dt = parse_rfc3339(author.get("date"))
-        repo = ((item.get("repository") or {}).get("full_name")) or ""
+        full = ((item.get("repository") or {}).get("full_name")) or ""
+        repo = full.rsplit("/", 1)[-1] if full else ""
+        message = str(commit.get("message") or "").split("\n", 1)[0].strip()
         if not sha or dt is None:
             continue
         key = as_tz_date(dt, tz_name).isoformat()
         if key in buckets:
-            buckets[key].append(GhCommit(sha=sha, author_date=dt, repo=repo))
+            buckets[key].append(
+                GhCommit(sha=sha, author_date=dt, repo=repo, message=message)
+            )
     for key, commits in buckets.items():
         seen: set[str] = set()
         unique: list[GhCommit] = []

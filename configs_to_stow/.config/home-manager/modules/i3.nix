@@ -19,7 +19,7 @@
     enable = true;
 
     extraConfig = ''
-      for_window [title="^scoreboard$"] floating enable, resize set 900 560, move position center
+      for_window [title="^scoreboard$"] floating enable, resize set 900 720, move position center
     '';
 
     config = {

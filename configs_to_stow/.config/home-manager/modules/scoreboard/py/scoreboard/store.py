@@ -55,6 +55,26 @@ def save_json(path: Path, data: dict[str, Any], *, mode: int | None = None) -> N
         path.chmod(mode)
 
 
+def merge_recent(
+    old: list[dict[str, Any]],
+    new: list[dict[str, Any]],
+    *,
+    id_key: str,
+    time_key: str,
+    limit: int,
+) -> list[dict[str, Any]]:
+    by_id: dict[str, dict[str, Any]] = {}
+    for item in old + new:
+        item_id = item.get(id_key)
+        if item_id:
+            by_id[str(item_id)] = item
+    return sorted(
+        by_id.values(),
+        key=lambda item: str(item.get(time_key) or ""),
+        reverse=True,
+    )[:limit]
+
+
 def merge_completed(
     previous: dict[str, Any] | None,
     new_items: list[dict[str, Any]],
