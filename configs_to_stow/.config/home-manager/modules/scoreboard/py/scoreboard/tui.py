@@ -10,7 +10,7 @@ from .config import Config
 from .render import render, want_color
 
 # Alternate screen so each paint replaces the frame instead of stacking
-# copies in Ghostty scrollback when the glance is taller than the window.
+# copies in terminal scrollback when the glance is taller than the window.
 _ALT_ON = "\033[?1049h\033[?25l"
 _ALT_OFF = "\033[?25h\033[?1049l\033[0m"
 _CLEAR = "\033[H\033[2J\033[3J"
@@ -29,13 +29,58 @@ def _paint(text: str) -> None:
     sys.stdout.flush()
 
 
-def _drain(fd: int) -> None:
-    while True:
-        ready, _, _ = select.select([fd], [], [], 0)
+def _read_byte(fd: int, timeout: float | None) -> str | None:
+    if timeout is not None:
+        ready, _, _ = select.select([fd], [], [], timeout)
         if not ready:
+            return None
+    ch = sys.stdin.read(1)
+    return ch if ch else ""
+
+
+def _skip_escape(fd: int) -> None:
+    """Drop CSI / SS3 / mouse payloads that follow ESC (wheel, arrows, etc.)."""
+    nxt = _read_byte(fd, 0.05)
+    if nxt is None or nxt == "":
+        return
+    if nxt == "[":
+        third = _read_byte(fd, 0.05)
+        if third is None or third == "":
             return
-        if not sys.stdin.read(1):
+        if third == "M":
+            for _ in range(3):
+                if _read_byte(fd, 0.05) in (None, ""):
+                    return
             return
+        if third == "<":
+            while True:
+                b = _read_byte(fd, 0.05)
+                if b is None or b in ("", "M", "m"):
+                    return
+            return
+        if len(third) == 1 and "@" <= third <= "~":
+            return
+        while True:
+            b = _read_byte(fd, 0.05)
+            if b is None or b == "" or (len(b) == 1 and "@" <= b <= "~"):
+                return
+        return
+    if nxt == "O":
+        _read_byte(fd, 0.05)
+
+
+def _key(fd: int) -> str:
+    """One key. Wheel/arrow sequences return '\\x00' (ignore). EOF is ''."""
+    ch = sys.stdin.read(1)
+    if not ch:
+        return ""
+    if ch != "\x1b":
+        return ch
+    ready, _, _ = select.select([fd], [], [], 0.05)
+    if not ready:
+        return "\x1b"
+    _skip_escape(fd)
+    return "\x00"
 
 
 def watch(cfg: Config) -> int:
@@ -56,16 +101,17 @@ def watch(cfg: Config) -> int:
         while True:
             snap = snapshot(cfg)
             _paint(render(snap, cfg, footer=True, color=want_color()))
-            ready, _, _ = select.select([sys.stdin], [], [], max(cfg.poll_seconds, 5))
-            if not ready:
-                continue
-            char = sys.stdin.read(1)
-            _drain(fd)
-            if char in ("", "q", "Q", "\x1b"):
-                break
-            if char not in ("r", "R"):
-                continue
-            _paint("refreshing…\n")
+            while True:
+                ready, _, _ = select.select([sys.stdin], [], [], max(cfg.poll_seconds, 5))
+                if not ready:
+                    break
+                char = _key(fd)
+                if char in ("", "q", "Q", "\x1b"):
+                    return 0
+                if char in ("r", "R"):
+                    _paint("refreshing…\n")
+                    break
+                # ignore scroll / arrows / leftover bytes; keep the current frame
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old)
         if entered_alt:

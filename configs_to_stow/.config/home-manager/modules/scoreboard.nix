@@ -28,7 +28,7 @@ let
       exit 0
     fi
 
-    ghostty --class=scoreboard --x11-instance-name=scoreboard --scrollback-limit=0 -e ${overlay} >/dev/null 2>&1 &
+    gnome-terminal --class=scoreboard --title=scoreboard --hide-menubar --geometry=100x36 -- ${overlay} >/dev/null 2>&1 &
 
     i=0
     while [ "$i" -lt 100 ]; do
