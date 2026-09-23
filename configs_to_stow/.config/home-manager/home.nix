@@ -20,6 +20,7 @@
     bat
     git-lfs
     fd
+    ripgrep
     zoxide
     fzf
     tealdeer
@@ -54,9 +55,6 @@
 
     # gtk settings daemon for i3 (applies theme to gtk apps)
     xsettingsd
-
-    # database gui
-    dbeaver-bin
 
     # notes
     obsidian
