@@ -70,6 +70,10 @@
     # power management
     acpi
 
+    # disk I/O monitoring (provides iostat, sar, mpstat, pidstat)
+    sysstat
+    iotop
+
     # OpenWhispr dependencies (for system-wide pasting)
     xdotool
     wl-clipboard
