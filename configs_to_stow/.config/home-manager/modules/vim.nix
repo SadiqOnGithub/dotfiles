@@ -46,6 +46,9 @@ in
       # Nix syntax highlighting and indentation
       vim-nix
 
+      # Fuzzy finder (project search: :Files :Rg :BLines)
+      fzf-vim
+
       # Async LSP client for Vim 8+
       vim-lsp
 
@@ -239,6 +242,13 @@ in
       nnoremap <silent> <leader>xq :call QuickfixToggle()<CR>
       nnoremap ]q :cnext<CR>
       nnoremap [q :cprev<CR>
+
+      " FZF project search (requires ripgrep + fzf)
+      nnoremap <silent> <leader>ff :Files<CR>
+      nnoremap <silent> <leader>fg :Rg<CR>
+      nnoremap <silent> <leader>fb :BLines<CR>
+      nnoremap <silent> <leader>/ :BLines<CR>
+      let g:fzf_preview_window = ['right:50%', 'ctrl-/']
 
       " Netrw file browser settings
       let g:netrw_banner = 0
