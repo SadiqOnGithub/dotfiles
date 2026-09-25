@@ -65,6 +65,10 @@
     # javascript runtime & package manager
     bun
 
+    # rust toolchain
+    rustc
+    cargo
+
     # power management
     acpi
 
