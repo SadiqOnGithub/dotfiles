@@ -122,6 +122,7 @@
     alias hams="cd ~/Documents/web/okhla-consultancy/hams"
     alias oss="cd ~/Documents/web/oss"
     alias prac="cd ~/Documents/web/prac"
+    alias sys="cd ~/Documents/web/prac/sys_perf"
     alias rus="cd ~/Documents/web/prac/rust"
     alias rusp="cd ~/Documents/web/prac/rust/rust-prac"
     alias know="cd ~/Documents/Knowledge"
