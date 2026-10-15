@@ -114,6 +114,7 @@
     alias dest="cd ~/Desktop/temp"
     alias down="cd ~/Downloads"
     alias docu="cd ~/Documents"
+    alias proj="cd ~/Documents/projects"
     alias gls="cd ~/Documents/goals"
     alias web="cd ~/Documents/web"
     alias vs="cd ~/Documents/web/okhla-consultancy/vs"
